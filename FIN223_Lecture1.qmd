@@ -1,0 +1,280 @@
+---
+title: "Portfolio Theory"
+#title-slide-attributes:
+#    data-background-image: /path/to/title_image.png
+#    data-background-size: contain
+#    data-background-opacity: "0.5"
+subtitle: "FIN 223 Lecture 1"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+  #email: "aainswor@uow.edu.au"
+format: 
+  revealjs:
+    #theme: css_test.scss
+    #incremental: true
+    smaller: true
+    #scrollable: true
+    #footer: "FIN 223 Investment Analysis"
+    #logo: UOW_logo.png
+    #embed-resources: true
+    html-table-processing: none
+#include-in-header:
+#  - text: |
+#      <style>
+#      .reveal .slide-logo {
+#        max-height: unset;
+#        height: 100px;
+#      }
+#      </style>
+execute: 
+  eval: true
+  echo: false
+
+---
+
+## Lecture Outline
+:::{}
+-   A quick refresher on return and risk measurement
+-   Investor preferences and utility
+    -   How do we model investor’s choices between different risky portfolios?
+-   Portfolio theory
+    -   What happens when investors combine different assets into portfolios?
+    -   What are diversification benefits?
+-   Creating optimal portfolios
+    -   What portfolios do investors choose to maximize their utility?
+:::
+
+-   Reading
+    - Ch 5.3, 5.5, 5.6
+    - Ch. 6.1-6.4
+
+
+# Let's get started {footer="false"}
+
+## Scenario return and risk
+
+- Expected returns $(E(R))$ are defined as:
+$$E(R) = \sum_{s=1}^K p_s \times R_s$$
+  - $s$ represents an  economic scenario ranging from 1, 2, 3 ... to $K$
+    - The scenarios could be recession, boom or normal economic times
+  - $p_s$ is the probability of a certain scenario ($s$) occuring
+  - $R_s$ is the asset return if a certain scenario ($s$) occurs
+
+- Variance is defined as:
+$$\sigma^2=\sum_{s=1}^K p_s \times [R_s-E(R)]^2$$
+
+- Standard deviation $(\sigma)$ = $\sqrt{\sigma^2}$
+
+## Scenario return and risk
+
+```{r}
+library(gt)
+library(dplyr)
+
+scenario <- data.frame(scenario = c("Excellent", "Good", "Poor", "Crash"),
+                        prob = c(0.25, 0.45, 0.25, 0.05), ret = c(0.31, 0.14, -0.0675, -0.52))
+
+scenario_gt <- scenario %>%
+  gt(id = "one") %>%
+  cols_label(scenario = md("**Scenario**"), prob = md("**Probability**"), ret = md("**Return**")) %>%
+  fmt_percent(columns = prob, decimals = 0) %>%
+  fmt_percent(columns = ret) %>%
+  cols_align_decimal(columns = c(prob, ret)) %>%
+  cols_align(align="center", columns = c(prob, ret)) %>%
+  cols_width(everything() ~ px(250)) %>%
+  tab_options(table_body.hlines.style = "none") %>%
+  opt_table_font(font = google_font(name = "Montserrat"), size = 30, color = "#0b1554") %>%
+  tab_style(style = cell_borders(sides = c("t", "b"), color = "#0b1554", weight = px(2)),
+    locations = cells_column_labels()) %>%
+  tab_style(style = cell_borders(sides = c("b"), color = "#0b1554", weight = px(2)),
+    locations = cells_body(columns = everything(), rows = length(scenario)))
+
+scenario_gt
+```
+
+$$
+\begin{align}
+E(R) &= \sum_{s=1}^4 p_s \times R_s \\
+&= (0.25 \times 0.31) + (0.45 \times 0.14) + (0.25 \times -0.0675) + (0.05 \times -0.52) \\
+&= 0.0976 \\
+&=9.76\%
+\end{align}
+$$
+
+## Scenario return and risk
+
+```{r}
+scenario_gt
+```
+
+$$
+\begin{align}
+\sigma^2 &= \sum_{s=1}^4 p_s \times [R_s-E(R)]^2 \\
+&= 0.25 \times (0.31-0.0976)^2 + 0.45 \times (0.14-0.0976)^2 + \\
+  & \qquad 0.25 \times (-0.0675-0.0976)^2 + 0.05 \times (-0.52-0.0976)^2 \\
+&= 0.038\\
+\sigma &= \sqrt{0.038}=0.1949=19.49\%\\
+\end{align}
+$$
+
+## Arithmetic and geometric averages
+
+- Arithmetic average
+  - If we assume the probability of each state is equal then $p_s=\frac{1}{K}$:
+$$E(R) = \sum_{s=1}^K p_s \times R_s=\frac{1}{K}\sum_{s=1}^K R_s$$
+
+
+- Geometric (time-weighted) average
+  - Terminal value (TV) of the investment:
+$$TV_n = (1+r_1)(1+r_2)...(1+r_n)$$
+  - Geometric average return $(g)$ over $n$ time periods:
+$$g=TV_n^{1/n} -1$$
+
+## Estimating variance and standard deviation
+
+- **Population** variance is the measured as the expected value of squared deviations
+$$\sigma^2 = \frac{1}{n} \sum_{t=1}^n [R_t-\bar{R}]^2$$
+- We want to work with the **sample** variance and standard deviation so need to divide by $n-1$ rather than $n$
+  $$\sigma^2 = \frac{1}{n-1} \sum_{t=1}^n [R_t-\bar{R}]^2$$
+  $$\sigma = \sqrt{\frac{1}{n-1} \sum_{t=1}^n [R_t-\bar{R}]^2}$$
+
+## The normal distribution
+
+- Investment analysis can “appear” easier if we assume asset returns follow a normal distribution
+  - Symmetric asset returns $\rightarrow$ Standard deviation is a good measure of risk 
+  - Symmetric asset returns $\rightarrow$ Portfolio returns will be symmetric as well
+  - Only mean and standard deviation needed to estimate future scenarios
+  - Pairwise correlation coefficients summarize the dependence of returns across securities
+
+- You need to be aware that we are making an assumption when we focus only on means and standard deviation
+
+## The normal distribution
+
+<!--
+Insert chart of normal dist using r and a plot of BHP returns histogram
+-->
+```{r}
+library(ggplot2)
+ggplot(data.frame(x = c(-1, 1)), aes(x)) + stat_function(fun = dnorm, args = list(mean = 0.08, sd = 0.25))
+```
+
+# Investor decision making
+
+## Investor decision making
+
+- How does an investor choose the amount to invest in risky assets?
+  - We can use a utility function to rank alternative outcomes
+  - Investors choose among different assets or portfolios to maximise expected utility
+  - Investors can have different levels of risk aversion
+  - How much do they dislike risk?
+  - The utility function will lead to different portfolio choices by investors
+
+- If there is no uncertainty then we just need to determine how much we want to consume now, and how much we want to consume later
+  - Risk-free asset
+
+- If return is not certain across all possible states of the world
+  - The range of possible future cash flows will impact on wealth
+  - Risky assets
+
+# Portfolio risk and return
+
+## Portfolio with two risky assets
+
+- For a portfolio with two risky assets, the expected return and variance equations are:
+$$E(R_p) = w_1 E(R_1) + w_2 E(R_2)$$
+- Correlation coefficient between two assets:
+
+- Need to estimate two expected return, two variances and one covariance/correlation
+
+
+# How do investors choose portfolios?
+
+## Optimal combined portfolio
+
+- Choosing the optimal risky portfolio
+  - Best combination of risky and safe assets to form portfolio
+  - Optimal portfolio CAL tangent to efficient frontier 
+  - Slope of CAL is Sharpe Ratio of risky portfolio
+$$Sharpe\ Ratio = \frac{E(R_i)-R_f}{\sigma_i}$$
+- Separation Property implies portfolio choice, separated into two tasks
+  1. Determine the optimal risky portfolio that contains only risky assets
+  1. Determine the allocation to risky portfolio and risk-free asset based on investor's risk aversion (A)
+
+# Conclusion
+
+## Conclusion
+
+- Return and risk refresher
+- Use a utility function to model investor preferences
+  - This allows us to combing risk and return into a single equation 
+  - Allows us to incorporate different levels of risk aversion (A)
+- Portfolio theory
+  - What are the risk and return of portfolios?
+  - How do investors benefit from diversification?
+  - What portfolios maximise investor utility?
+    - Without a risk-free asset
+    - With a risk-free asset
+
+## Portfolio risk and correlation
+
+```{r}
+#| output: false
+library(tidyverse)
+
+# create expected returns and variance
+ret1 <- 0.04
+ret2 <- 0.10
+sd1 <- 0.05
+sd2 <- 0.10
+
+# calculate portoflio risk and return for different weights
+
+weight <- tibble(w = seq(from = 0, to = 1, by = 0.001))
+correl <- tibble(correl = seq(from = -100, to = 100, by = 5))
+
+# cross-product of weight and corr
+
+portfolio <- crossing(weight, correl)
+
+portfolio <- portfolio %>%
+  mutate(
+    erp = w*ret1 + (1-w)*ret2,
+    sdp = (w^2*sd1^2 + (1-w)^2*sd2^2 + 2*w*(1-w)*correl/100*sd1*sd2)^0.5)
+
+ojs_define(portfoliodata = portfolio)
+
+```
+
+```{ojs}
+viewof corr_value = Inputs.range(
+  [-1, 1], 
+  {value: 1, step: 0.05, label: "Corr:"}
+)
+
+filtered = transpose(portfoliodata).filter(function(pf) {
+  return corr_value == pf.correl/100;
+})
+
+Plot.plot({
+  x: { label: "Standard Deviation", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Expected Return", tickFormat: ".0%", zero:true, line: true, grid: true},
+  marks: [
+    Plot.ruleY([0], {filter: false}),
+    Plot.ruleY([0.12], {filter: false}),
+    Plot.ruleX([0], {filter: false}),
+    Plot.ruleX([0.2], {filter: false}),
+    Plot.line(filtered, { x: "sdp", y: "erp"}),
+    Plot.text(filtered, Plot.selectMinX({x: "sdp", y: "erp", text: "sdp", frameAnchor: "top", dy: 30})),
+    Plot.text(filtered, Plot.selectMaxY({x: "sdp", y: "erp", text: ["Asset A"], frameAnchor: "bottom", dy: -20})),
+    Plot.dot(filtered, Plot.selectMaxY({x: "sdp", y: "erp", fill: "blue", r: 4})),
+    Plot.dot(filtered, Plot.selectMinX({x: "sdp", y: "erp", fill: "red", r: 4}))],
+  style: {
+    color: "#0b1554",
+    fontFamily: "Arial",
+    fontSize: "20px",
+    overflow: "visible"
+  },
+  height:500, width: 900, margin: 50
+})
+```
