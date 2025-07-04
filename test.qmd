@@ -7,7 +7,7 @@ author:
 format: 
   revealjs:
     smaller: true
-    embed-resources: true
+    #embed-resources: true
     html-table-processing: none
 execute: 
   eval: true
