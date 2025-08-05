@@ -1,0 +1,380 @@
+---
+title: "Investor Decision Making"
+subtitle: "FIN 223 Lecture 2"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    #smaller: true
+    html-table-processing: none
+execute: 
+  eval: true
+  echo: false
+
+---
+
+## Lecture outline
+:::{}
+- A quick refresher on risk and return
+- Types of investors
+  - What are their investment objectives
+- Investor preferences and utility
+  - How do we model the investor’s decision making process?
+  - We can use a utility function and mean-variance preferences
+  - This will allow us to rank different investments
+  
+:::
+
+-   Reading
+    - Ch 5.3
+
+
+## Scenario return and risk
+
+- Expected returns $[E(R)]$ are defined as:
+
+$$E(R) = \sum_{s=1}^K p_s \times R_s$$
+
+:::{}
+- $s$ represents an  economic scenario ranging from 1, 2, 3 ... to $K$
+  - e.g. the scenarios could be recession, boom or normal economic times
+- $p_s$ is the probability of a certain scenario ($s$) occuring
+- $R_s$ is the asset return if a certain scenario ($s$) occurs
+:::
+
+- Variance is defined as:
+
+$$\sigma^2=\sum_{s=1}^K p_s \times [R_s-E(R)]^2$$
+
+
+## Scenario return and risk
+
+```{r}
+library(gt)
+library(dplyr)
+
+scenario <- data.frame(scenario = c("Excellent", "Good", "Poor", "Crash"),
+                        prob = c(0.25, 0.45, 0.25, 0.05), ret = c(0.31, 0.14, -0.0675, -0.52))
+
+scenario_gt <- scenario %>%
+  gt(id = "one") %>%
+  cols_label(scenario = md("**Scenario**"), prob = md("**Probability**"), ret = md("**Return**")) %>%
+  fmt_percent(columns = prob, decimals = 0) %>%
+  fmt_percent(columns = ret) %>%
+  cols_align_decimal(columns = c(prob, ret)) %>%
+  cols_align(align="center", columns = c(prob, ret)) %>%
+  cols_width(everything() ~ px(250)) %>%
+  tab_options(table_body.hlines.style = "none") %>%
+  opt_table_font(font = google_font(name = "Montserrat"), size = 30, color = "#0b1554") %>%
+  tab_style(style = cell_borders(sides = c("t", "b"), color = "#0b1554", weight = px(2)),
+    locations = cells_column_labels()) %>%
+  tab_style(style = cell_borders(sides = c("b"), color = "#0b1554", weight = px(2)),
+    locations = cells_body(columns = everything(), rows = length(scenario)))
+
+scenario_gt
+```
+
+$$
+\begin{align}
+E(R) &= \sum_{s=1}^4 p_s \times R_s \\
+&= (0.25 \times 0.31) + (0.45 \times 0.14) + (0.25 \times -0.0675) + (0.05 \times -0.52) \\
+&= 0.0976 \\
+&=9.76\%
+\end{align}
+$$
+
+
+## Scenario return and risk
+
+```{r}
+scenario_gt
+```
+
+$$
+\begin{align}
+\sigma^2 &= \sum_{s=1}^4 p_s \times [R_s-E(R)]^2 \\
+&= 0.25 \times (0.31-0.0976)^2 + 0.45 \times (0.14-0.0976)^2 + \\
+  & \qquad 0.25 \times (-0.0675-0.0976)^2 + 0.05 \times (-0.52-0.0976)^2 \\
+&= 0.038\\
+\sigma &= \sqrt{0.038}=0.1949=19.49\%\\
+\end{align}
+$$
+
+## Mean and standard deviation
+
+- Let's assume the probability of each state is equal then $p_s=\frac{1}{K}$
+- This leads to the arithmetic mean:
+
+$$E(R) = \sum_{s=1}^K p_s \times R_s=\frac{1}{K}\sum_{s=1}^K R_s$$
+
+- We want to work with the sample variance and standard deviation so need to divide by $n-1$ rather than $n$
+
+$$\sigma^2 = \frac{1}{n-1} \sum_{t=1}^n [R_t-\bar{R}]^2$$
+$$\sigma = \sqrt{\frac{1}{n-1} \sum_{t=1}^n [R_t-\bar{R}]^2}$$
+
+
+## Types of investors
+
+-	Households
+- Business firms
+-	Governments
+- Financial intermediaries
+  -	Include commercial banks, investment banks and insurance companies
+- Institutional investors
+  - Investment professionals who manage investments on someone else's behalf
+  - Includes managed funds, superannuation funds, sovereign wealth funds, hedge funds, etc
+  - Superannuation funds (pension funds) accept and manage contributions from employers and/or employees to provide retirement income benefits
+
+
+## Investor decision making
+
+:::{}
+- If there is no uncertainty 
+  - Then we only need to determine how much we want to consume now, and how much we want to consume later
+  - Investors can invest in the risk-free asset to transfer current wealth to the future
+- But returns are not certain across all possible states of the world
+  - We need to invest in risky assets
+  - The range of possible future cash flows will impact on wealth and investment choices
+:::
+
+- How does an investor choose the amount to invest in risky assets?
+  - We need to measure their attitude to risk
+  - Investors can have different levels of risk aversion
+  - We can use a utility function to rank alternative outcomes
+  - Investors choose different assets to maximise expected utility
+
+
+## Risk preferences
+
+- Two investment assets require an initial investment of $100
+  - Asset A: 60% chance of making $170 and 40% chance of making $15
+  - Asset B: 60% chance of making $108 and 40% chance of making $108
+- The expected final wealth for the risky asset (A) is:
+  
+$$E(W_A) = 0.6 \times $170 + 0.4 \times $15 = $108$$
+
+- The expected return is:
+
+$$E(R_A) = \frac{$108-$100}{$100} = 8\%$$
+
+- The risk-premium on the risky investment is zero as $E(R_A)=E(R_B)$
+- A fair gamble is a risky investment whose expected return equals the risk-free rate of return (i.e. zero risk premium)
+
+
+## Risk preferences
+
+- Investors can be classified into three groups:
+  - Risk averse (will reject a fair gamble)
+  - Risk neutral (is indifferent to a fair gamble and a risk-free investment)
+  - Risk seeking (will prefer a fair gamble to a risk-free investment)
+
+- The investor’s taste for risk will lead to certain shapes of the utility function
+- Risk-averse investors require an appropriate risk premium to accept a risky investment
+- Risk-neutral investors will select the investment with the highest return
+- Risk seeking investors will pay a premium to take additional risk
+
+
+## Mean-variance preferences
+
+- Let us assume a utility function that contains only the mean and variance of an asset’s return:
+
+$$U = E(R) - \frac{1}{2} A \sigma^2$$
+
+  - U is the utility derived from an investment with a particular expected return and variance
+  - A is the risk aversion parameter
+  - For a rational investor (risk averse) A > 0
+  - A = 0 is a risk neutral investor
+  - $\frac{1}{2}$ is a scaling factor
+  - We are assuming that either:
+    1. Expected returns are normally distributed, or
+    1. Investors only care about mean and variance
+
+
+## Mean-variance preferences
+
+- For a given risk aversion (A), the investor is indifferent between assets that line on the same indifference curve
+  
+```{r}
+#| output: false
+library(tidyverse)
+
+# certainty equivalent - intercept
+ceq <- 0.04
+
+sdp <- tibble(sdp = seq(from = 0, to = 0.16, by = 0.01))
+aversion <- tibble(a = seq(from = -5, to = 20, by = 0.5))
+
+# cross-product
+
+pf_aversion <- crossing(sdp, aversion)
+
+pf_aversion <- pf_aversion %>%
+  mutate(erp = ceq + 0.5 * a * sdp^2)
+    
+ojs_define(pf_aversion_ojs = pf_aversion)
+
+```
+
+```{ojs}
+//| panel: sidebar
+
+viewof risk_aversion = Inputs.range(
+  [-3, 19], 
+  {value: 5, step: 0.5, label: "Risk Aversion (A):"}
+)
+```
+
+```{ojs}
+
+filtered = transpose(pf_aversion_ojs).filter(function(pfra) {
+  return risk_aversion == pfra.a;
+})
+
+Plot.plot({
+  x: { label: "Standard Deviation", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Expected Return", tickFormat: ".0%", zero:true, line: true, grid: true, domain: [0, 0.30]},
+  marks: [
+    Plot.ruleY([0], {filter: false}),
+    Plot.ruleY([0.12], {filter: false}),
+    Plot.ruleX([0], {filter: false}),
+    Plot.ruleX([0.2], {filter: false}),
+    Plot.line(filtered, { x: "sdp", y: "erp", stroke: "red"}),
+    ],
+  style: {
+    color: "#0b1554",
+    fontFamily: "Arial",
+    fontSize: "20px",
+    overflow: "visible"
+  },
+  height:500, width: 900, margin: 50
+})
+```
+ 
+
+## Mean-variance preferences
+
+- Let's consider an investor with a risk aversion coefficient of A = 12
+```{r}
+#| output: false
+library(tidyverse)
+
+# risk aversion coefficient
+ra <- 12
+
+# calculate portoflio risk and return for different weights
+sdp1 <- tibble(sdp = seq(from = 0, to = 0.16, by = 0.001))
+ceq1 <- tibble(ceq = seq(from = 0.04, to = 0.12, by = 0.04))
+
+# cross-product of weight and corr
+pf_aversion1 <- crossing(sdp1, ceq1)
+
+pf_aversion1 <- pf_aversion1 %>%
+  mutate(erp = ceq + 0.5 * ra * sdp^2,
+         Asset = case_when(ceq == 0.04 ~ "A",
+                           ceq == 0.08 ~ "B",
+                           ceq == 0.12 ~ "C"),
+         Utility = case_when(ceq == 0.04 ~ "4%",
+                             ceq == 0.08 ~ "8%",
+                             ceq == 0.12 ~ "12%"))
+    
+ojs_define(pf_aversion_ojs1 = pf_aversion1)
+
+```
+
+```{ojs}
+//| panel: sidebar
+
+viewof utility = Inputs.checkbox(
+  ["4%", "8%", "12%"], 
+  { value: ["4%"], 
+    label: "Utility Level:"}
+)
+```
+
+```{ojs}
+
+filtered1 = transpose(pf_aversion_ojs1).filter(function(pfra1) {
+  return utility.includes(pfra1.Utility);
+})
+
+Plot.plot({
+  x: { label: "Standard Deviation", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Expected Return", tickFormat: ".0%", zero:true, line: true, grid: true, domain: [0, 0.30]},
+  marks: [
+    Plot.ruleY([0], {filter: false}),
+    Plot.ruleY([0.12], {filter: false}),
+    Plot.ruleX([0], {filter: false}),
+    Plot.ruleX([0.2], {filter: false}),
+    Plot.line(filtered1, { x: "sdp", y: "erp", stroke: "Utility", tip: true}),
+    Plot.crosshair(filtered1, { x: "sdp", y: "erp"}),
+    ],
+  style: {
+    color: "#0b1554",
+    fontFamily: "Arial",
+    fontSize: "20px",
+    overflow: "visible"
+  },
+  height:500, width: 900, margin: 50
+})
+
+```
+
+
+## Mean-variance preferences
+
+- The mean-variance criterion states that portfolio A is preferable to portfolio B if the two conditions hold with one inequality being strict:
+ 
+$$E(R_A) \ge E(R_B)$$
+$$\sigma_A \le \sigma_B$$
+
+- This is simply a mathematical statement that investors will choose portfolios which have higher returns and lower risk
+- This provides the North-west selection rule
+
+
+## Mean-variance preferences
+
+- We can calculate certainty equivalents to rank competing portfolios
+- What is the risk-free return required to make an investor with A = 3 indifferent to a portfolio with expected return of 15% and standard deviation of 20%?
+ 
+$$U = E(R) - \frac{1}{2} A \sigma^2$$
+$$U_{Risky} = 0.15 - \frac{1}{2} \times 3 \times 0.2^2 = 0.09$$
+
+- What is the return on the risk-free portfolio that has the same utility
+ 
+$$U_{Risk-free} = 0.09 = E(R) - \frac{1}{2} \times 3 \times 0^2 \Rightarrow E(R) = 0.09$$
+
+- The return on a risk-free asset is its utility 
+
+
+## Investing over the lifecycle
+
+- Growth-oriented youth 
+  - Age: 20 to 50
+  - Low risk aversion
+  - Portfolio tends to favour growth-oriented and speculative investments; particularly high-risk common stocks
+- Middle-age consolidation
+  - Age: 50 to 67
+  - Medium risk-aversion
+  - Portfolio shifts to less risky investments such as stocks that offer a balance between growth and income
+- Income-oriented retirement
+  - Age: 67 to ?
+  - Higher risk-aversion
+  - Portfolio becomes highly conservative to preserve capital and current income in low-risk income stocks and managed funds, bonds, etc.
+
+
+## Conclusion
+
+:::{}
+- We can use a utility function to model investor preferences
+- This allows us to combing risk and return into a single equation 
+- Allows us to incorporate different levels of risk aversion (A)
+- We can use investor utility to help decide what investment portfolio an investor should hold
+:::
+
+- Next week: Portfolio Theory
+
+
+
+
