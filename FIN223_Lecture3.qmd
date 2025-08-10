@@ -1,0 +1,599 @@
+---
+title: "Portfolio Theory"
+subtitle: "FIN 223 Lecture 3"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    #smaller: true
+    html-table-processing: none
+    chalkboard: 
+      buttons: false
+      src: FIN223_chalkboard_L3.json
+execute: 
+  eval: true
+  echo: false
+---
+
+## Lecture outline
+
+- A brief review of asset allocation
+- What happens when different assets are combined into portfolios?
+- What are the benefits of diversification?
+- How do investors choose the weights in different assets to build their investment portfolios?
+  - They want to maximize their utility
+  - Their portfolio will depend on whether they can invest in a risk-free asset
+\
+\
+
+- Reading
+  - Ch 5.3, 5.5, 5.6, 6.1-6.4
+
+
+## Asset allocation
+
+- Investors have a large variety of asset classes to choose from to achieve their investment goals
+  - Equity securities
+  - Fixed-income securities
+  - Managed funds (referred to as mutual funds in the US)
+  - Exchange-traded funds (ETFs)
+  - Hedge funds
+  - Real estate
+  - Commodities
+  - Private equity
+- Asset classes have different levels of risk
+  - Risk is the uncertainty surrounding the return that a particular investment will generate
+  - Low-risk: more predictable, lower average return
+  - High-risk: less predictable, higher average return
+
+
+## Asset allocation
+
+- Asset allocation is the proportion of investor's funds invested into different asset classes
+- An investor’s asset allocation depends on
+  - Their desired risk level
+  - Their liquidity needs 
+-	Different asset classes have different levels of liquidity
+- Strategic asset allocation is a benchmark allocation between asset classes
+  - Cash
+  - Fixed interest
+  - Equity
+  - Real estate
+  - Alternative investments
+- Investment managers will generally have a range of portfolio weights for each asset class
+  - This allocation depends on the objective of the fund
+
+## The normal distribution
+
+- Investment analysis can “appear” easier if we assume asset returns follow a normal distribution
+  - Symmetric asset returns $\rightarrow$ Standard deviation is a good measure of risk 
+  - Symmetric asset returns $\rightarrow$ Portfolio returns will be symmetric as well
+  - Only mean and standard deviation needed to estimate future scenarios
+  - Pairwise correlation coefficients summarize the dependence of returns across securities
+- You need to be aware that we are making an assumption when we focus only on means and standard deviation
+
+:::{}
+```{r}
+#| fig-width: 4
+#| fig-height: 3
+#| fig-align: "center"
+library(ggplot2)
+ggplot(data.frame(Return = c(-60, 60)), aes(Return)) + stat_function(fun = dnorm, args = list(mean = 5, sd = 15)) + labs(y="Probability Density")
+```
+:::
+
+
+## Portfolio with two risky assets
+
+- The expected return $\left[E(R)\right]$ for a portfolio with two risky assets:
+
+$$E(R_p) = w_1 E(R_1) + w_2 E(R_2)$$
+
+- where $w_1$ is the weight in asset 1 and $w_2$ is the weight in asset 2
+
+:::{.fragment}
+- The standard deviation of portfolio returns ($\sigma_p$) for a portfolio with two risky assets:
+
+$$
+\begin{align}
+\sigma_p^2 &= w_1^2 \sigma_1^2 + w_2^2 \sigma_2^2 + 2 w_1 w_2  \sigma_{12} \\[3px]
+\sigma_p^2 &= w_1^2 \sigma_1^2 + w_2^2 \sigma_2^2 + 2 w_1 w_2  \rho_{12} \sigma_1 \sigma_2
+\end{align}
+$$
+
+:::
+
+:::{.fragment}
+- The correlation ($\rho$) between asset $i$ and asset $j$ is:
+
+$$\rho_{ij} = \frac{\sigma_{ij}}{\sigma_i \sigma_j}$$
+
+- We need to estimate two expected return, two variances and one covariance/correlation
+:::
+
+
+## The impact of correlation on portfolio risk
+
+```{r}
+#| output: false
+library(tidyverse)
+
+# create expected returns and variance
+ret1 <- 0.02
+ret2 <- 0.10
+sd1 <- 0.05
+sd2 <- 0.10
+
+# calculate portoflio risk and return for different weights
+
+weight <- tibble(w = seq(from = 0, to = 1, by = 0.001))
+correl <- tibble(correl = seq(from = -100, to = 100, by = 5))
+
+# cross-product of weight and corr
+
+portfolio <- crossing(weight, correl)
+
+portfolio <- portfolio %>%
+  mutate(
+    erp = w*ret1 + (1-w)*ret2,
+    sdp = (w^2*sd1^2 + (1-w)^2*sd2^2 + 2*w*(1-w)*correl/100*sd1*sd2)^0.5)
+
+ojs_define(portfoliodata = portfolio)
+
+```
+
+```{ojs}
+//| panel: sidebar
+viewof corr_value = Inputs.range(
+  [-1, 1], 
+  {value: 1, step: 0.05, label: "Correlation"}
+)
+```
+
+```{ojs}
+
+filtered = transpose(portfoliodata).filter(function(pf) {
+  return corr_value == pf.correl/100;
+})
+
+Plot.plot({
+  x: { label: "Standard Deviation", tickFormat: ".0%", ticks: 11, line: true, grid: true, domain: [0, 0.11]},
+  y: { label: "Expected Return", tickFormat: ".0%", zero:true, line: true, grid: true},
+  marks: [
+    Plot.ruleY([0], {filter: false}),
+    Plot.ruleY([0.12], {filter: false}),
+    Plot.ruleX([0], {filter: false}),
+    Plot.ruleX([0.2], {filter: false}),
+    Plot.line(filtered, { x: "sdp", y: "erp"}),
+    Plot.text(filtered, Plot.selectMinX({x: "sdp", y: "erp", text: "sdp", frameAnchor: "top", dy: 30})),
+    Plot.dot(filtered, Plot.selectMaxY({x: "sdp", y: "erp", fill: "blue", r: 4})),
+    Plot.dot(filtered, Plot.selectMinX({x: "sdp", y: "erp", fill: "red", r: 4})),
+    Plot.dot(filtered, Plot.selectMinY({x: "sdp", y: "erp", fill: "orange", r: 4}))],
+  style: {
+    color: "#0b1554",
+    fontFamily: "Arial",
+    fontSize: "20px",
+    overflow: "visible"
+  },
+  height:500, width: 900, margin: 50
+})
+```
+
+
+## Portfolio with three risky assets
+
+- The expected return for a three risky asset security portfolio is:
+
+$$E(R_p) = w_1 E(R_1) + w_2 E(R_2) + w_3 E(R_3)$$
+
+- The risk for a portfolio with three risk assets is:
+
+$$\sigma_p^2 = w_1^2 \sigma_1^2 + w_2^2 \sigma_2^2 + w_3^2 \sigma_3^2 + 2 w_1 w_2  \sigma_{12} + 2 w_1 w_3  \sigma_{13} + 2 w_2 w_3  \sigma_{23}$$
+
+- There are three expected returns, three variances and three covariance terms to estimate
+- Unlike the two security case the feasible portfolio set represents an area not a curve
+
+## Portfolio with three risky assets
+
+<!-- Add in hand drawn chart -->
+
+## Portfolio with *n* risky assets
+
+- Expected return on an *n*-security portfolio
+
+$$
+\begin{align}
+  E(R_p)  &= w_1 E(R_1) + w_2 E(R_2) + ... + w_n E(R_n) \\[3px]
+          &= \sum_{i=1}^{n}{w_i E(R_i)}
+\end{align}
+$$
+
+- Variance of portfolio returns:
+
+$$
+\begin{align}
+\sigma_p^2 &= \sum_{i=1}^{n} \sum_{j=1}^{n} w_i w_j \sigma_{ij} \\
+ &= \sum_{i=1}^{n} \sum_{j=1}^{n} w_i w_j \rho_{ij} \sigma_i \sigma_j
+\end{align}
+$$
+
+## Portfolio with *n* risky assets
+
+- Portfolio variance now requires the covariance between all pairs of assets in the portfolio
+  - We can collect all the covariance terms in a matrix ($\mathbf{V}$)
+
+$$\mathbf{V} =
+\left[
+\begin{array}{covar}
+\sigma_1^2 & \sigma_{12} & \sigma_{13} \\
+\sigma_{21} & \sigma_2^2 & \sigma_{23} \\
+\sigma_{31} & \sigma_{32} & \sigma_3^2 \\
+\end{array}
+\right]$$
+
+- If we have $n$ assets in our investment universe then we require $n$ expected returns and $n$ variance terms
+- We require $(n^2 – n)/2$ covariance terms to compute portfolio variance
+- For a 200 asset investment universe we require the following estimates
+  - 200 expected returns
+  - 200 variances
+  - 19,990 covariances	
+  - 20,300 total estimates
+
+
+
+## Diversification
+
+- Degree to which two-security portfolio reduces variance of returns depends on degree of correlation between the returns of the securities
+- The smaller the correlation between two risky assets, higher the gains from diversification
+- Investors can stabilise rate of return so that variance decreases without reducing portfolio expected return
+- Investors gain from diversification provided securities are not perfectly correlated
+- Diversification helps reduce risk by offsetting firm specific risk among assets
+- Mathematically speaking, this reduction in risk is attributable to the less than perfect correlations (<1) among assets returns
+
+$$\sigma_p^2 = w_1^2 \sigma_1^2 + (1-w_1)^2 \sigma_2^2 + 2 w_1 (1-w_1) {\rho_{12}} \sigma_1 \sigma_2$$
+
+
+
+
+## Diversification {#sec-diversification}
+
+- In a portfolio context, variance has two components
+  - Systematic: This risk cannot be diversified away
+  - Idiosyncratic: Firm-specific risk can be removed through diversification
+- As more assets are added to a portfolio, the portfolio variance declines on average
+- If we have an equal weight $\left(\frac{1}{n}\right)$ invested in each stock in a portfolio then the following relationship holds 
+  - See [Appendix](#sec-appendix) for full derivation
+
+$$\sigma_p^2 = \left(\frac{1}{n}\right)\overline\sigma_i^2 + \left(\frac{n-1}{n}\right)\overline\sigma_{ij}$$
+
+- Does portfolio variance always decline as more stocks are added to a portfolio?
+
+## Diversification
+
+```{r}
+library(tidyverse)
+
+portvar <- tibble(n = seq(from = 1, to = 20, by = 1))
+portvar <- portvar %>%
+  mutate(portvar = ((1/n)*(0.2)^2 + ((n-1)/n)*0.008)^(0.5))
+
+avgcovar <- round((0.2*0.2*0.2)^(0.5)*100, digit=2)
+
+```
+
+- If we assume $\overline\sigma_i = 20\%$ and $\overline\rho_{ij} = 0.2$ then portfolio standard deviation will approach $`r avgcovar`$$\%$
+
+:::{.fragment}
+```{r}
+library(ggplot2)
+
+ggplot(portvar, aes(x = n, y = portvar)) +
+  geom_col(fill = "orange") +
+  labs(x = "Number of stocks in portfolio", y = "Standard Deviation") +
+  theme(axis.title.x = element_text(size=16),
+        axis.title.y = element_text(size=16),
+        axis.text = element_text(size=16),
+        panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.5),
+        panel.grid.major.y = element_line(colour = "grey", linewidth = 0.05, linetype = "dotted"),
+        text = element_text(family ="sans"),
+        axis.ticks = element_blank(),
+        plot.caption = element_text(hjust = 0)) +
+  scale_y_continuous(expand = expansion(mult = 0),
+                     breaks = seq(0, 0.20, 0.02),
+                     label=scales::label_percent()) +
+  scale_x_continuous(expand = expansion(mult = 0.01),
+                     breaks = seq(0, 20, 1))
+
+```
+:::
+
+
+## Mean-variance opportunity set
+
+- The mean-variance opportunity set is the combination of risky assets that minimises portfolio variance for a given level of portfolio expected return
+- We can find the weights ($w_i$) in these portfolios by solving the following optimization problem:
+
+$$
+\begin{align}
+  &\underset{w_i, w_j}{\text{minimize}} \ &&\sum_{i=1}^{n} \sum_{j=1}^{n} w_i w_j \sigma_{ij} = \sigma_p^2 \\
+  &\text{subject to} \                    &&\sum_{i=1}^{n}{w_i}{E(R_i)} = E(R_p) \\
+  &\                                      &&\sum_{i=1}^{n}{w_i} = 1 
+\end{align}
+$$
+
+- An efficient portfolio is one that has the highest expected return for a given level of portfolio risk
+
+
+## Mean-variance opportunity set
+
+<!-- hand-drawn chart showing min-var for a given level of return and different points
+  - min-var frontier
+  - efficient frontier
+  - inefficient portfolios
+-->
+
+## Portfolio choice without a risk-free asset
+
+- The risky portfolio that investors select is based upon their risk preferences
+- This will depend precisely upon their utility function in expected return-standard deviation space
+- Investors will select the weights in the portfolio that maximise their expected utility
+- We know that investor will select portfolios on the efficient part of the mean-variance frontier as other portfolios are inefficient
+  - An investor would not select a portfolio with the same return and higher risk
+  - An investor would not select a portfolio with the same risk and lower return
+- The optimal portfolio that they select is on the efficient frontier as that will provide the maximum expected return for a given level of risk
+
+
+## Portfolio choice without a risk-free asset
+
+- Let's consider two different investors with different risk version
+
+```{r}
+#| output: false
+library(tidyverse)
+
+pfl3 <- tibble(w = seq(from = 0, to = 1, by = 0.001))
+
+pfl3 <- pfl3 %>%
+  mutate(reta = 0.02, retb = 0.2, sda = 0.08, sdb = 0.08, correl_ab = -0.6,
+         erp = w*reta + (1-w)*retb,
+         sdp = (w^2*sda^2 + (1-w)^2*sdb^2 + 2*w*(1-w)*correl_ab*sda*sdb)^0.5)
+
+ojs_define(pfl3_ojs = pfl3)
+
+```
+
+```{r}
+#| output: false
+
+ral3 <- tibble(a = c(40, 70))
+erpl3 <- tibble(erp = seq(from = 0, to = 0.20, by = 0.001))
+ceql3 <- tibble(ceq = seq(from = 0, to = 0.14, by = 0.001))
+
+pfl3_ute <- crossing(erpl3, ceql3, ral3)
+
+pfl3_ute <- pfl3_ute %>%
+  mutate(sdp = ((erp - ceq)/(0.5 * a))^(0.5),
+         riskaversion = case_when(a == 40 ~ "Low",
+                                  a == 70 ~ "High")) %>%
+  filter(sdp <= 0.1)
+    
+ojs_define(pfl3_ute_ojs = pfl3_ute)
+
+```
+
+
+```{ojs}
+//| panel: sidebar
+
+viewof utility_level = Inputs.range(
+  [0, 0.14], 
+  {value: 0, step: 0.001, label: "Utility Level"}
+)
+
+viewof ra = Inputs.radio(
+  ["Low", "High"], 
+  { value: "High", 
+    label: "Risk Aversion"}
+)
+```
+
+```{ojs}
+
+filtered_ute = transpose(pfl3_ute_ojs).filter(function(ute) {
+  return utility_level == ute.ceq && ra == ute.riskaversion;
+})
+
+Plot.plot({
+  x: { label: "Standard Deviation", tickFormat: ".0%", ticks: 11, line: true, grid: true, domain: [0, 0.10]},
+  y: { label: "Expected Return", tickFormat: ".0%", zero:true, line: true, grid: true, domain:[0,0.2]},
+  marks: [
+    Plot.ruleY([0], {filter: false}),
+    Plot.ruleX([0], {filter: false}),
+    Plot.line(transpose(pfl3_ojs), { x: "sdp", y: "erp", stroke: "blue"}),
+    Plot.line(filtered_ute, { x: "sdp", y: "erp", stroke: "red"})],
+  style: {
+    color: "#0b1554",
+    fontFamily: "Arial",
+    fontSize: "20px",
+    overflow: "visible"
+  },
+  height:500, width: 900, margin: 50
+})
+```
+
+
+## Portfolio choice with a risk-free asset
+
+- What portfolios are available if investors can choose between investing in a risky portfolio and a risk free asset?
+
+:::{.fragment}
+- The expected return for the combined portfolio is:
+
+$$
+\begin{align}
+  E(R_c) &= w_p E(R_p) + (1-w_p) E(R_f) \\[3px]
+         &= w_p E(R_p) + (1-w_p) R_f \\[3px]
+         &= R_f + w_p\left[E(R_p) - R_f \right]
+\end{align}
+$$
+:::
+
+:::{.fragment}
+- The standard deviation for the combined portfolio is:
+
+$$
+\begin{align}
+  \sigma_i^2 &= w_1^2 \sigma_1^2 + w_2^2 \sigma_2^2 + 2 w_1 w_2  \sigma_{12} \\[3px]
+  \sigma_c^2 &= w_p^2 \sigma_p^2 + (1-w_p^2) \sigma_f^2 + 2 w_p(1-w_p) \rho_{pf} \sigma_p \sigma_f \\[3px]
+  \sigma_c^2 &= w_p^2 \sigma_p^2 \\[3px]
+  \therefore \sigma_c& = w_p \sigma_p 
+\end{align}
+$$
+:::
+
+## Portfolio choice with a risk-free asset
+
+- This represent a straight line in expected return-standard deviation space
+
+$$E(R_c) = R_f + \frac{\left[E(R_p) - R_f \right]}{\sigma_p} \sigma_c$$
+
+- This is the Capital Allocation Line (CAL)
+
+<!-- hand-drawn chart -->
+
+
+## Risk aversion and portfolio choice
+
+- What portfolio does an investors choose if they can borrow or lend at a fixed risk-free rate?
+- This can be found by standard optimisation techniques
+
+$$
+\begin{align}
+  \underset{w_p}{\text{maximize}} \ U &= E(R_c) - \frac{1}{2} A \sigma_c^2 \\
+          &= R_f + w_p\left[E(R_p) - R_f \right] - \frac{1}{2} A w_p^2 \sigma_p^2
+\end{align}
+$$
+
+:::{.fragment}
+- To solve, differentiate with respect to $w_p$ and set equal to 0
+
+$$
+\begin{align}
+  \frac{dU}{dw_p} &= E(R_p) - R_f - A w_p \sigma_p^2 = 0 \\
+  \therefore w_p &= \frac{E(R_p) - R_f}{A \sigma_p^2}
+\end{align}
+$$
+:::
+
+
+
+## Optimal risky portfolio
+
+- Choosing the optimal risky portfolio
+  - Best combination of risk-free and risky assets to form portfolio
+  - The optimal risky portfolio has a CAL that is tangential to the efficient frontier 
+  - The slope of the CAL is the Sharpe Ratio of the risky portfolio
+  
+$$Sharpe\ Ratio = \frac{E(R_i)-R_f}{\sigma_i}$$
+
+:::{.fragment}
+- The separation property implies thet portfolio choice is separated into two tasks:
+
+1. Determine the optimal risky portfolio that contains only risky assets
+    - Find the weights in the risky assets that maximises the Sharpe Ratio
+1. Determine the allocation to risky portfolio and risk-free asset based on investor's risk aversion (A)
+    - Allocate cpatial to risk-free asset the optimal risky portfolio
+:::
+
+## Optimal combined portfolio
+
+```{r}
+# add in CAL with max Sharpe Ratio
+
+E <- matrix(c(0.02, 0.2), nrow=2)
+ones <- matrix(c(1, 1), nrow=2)
+V <- matrix(c(0.08^2, 0.08*0.08*-0.6, 0.08*0.08*-0.6, 0.08^2), nrow=2)
+rf <- 0.04
+H <- t(E- rf*ones) %*% solve(V) %*% (E- rf*ones)
+sharpe <- (as.numeric(H))^0.5
+
+cal <- tibble(sdp = seq(from = 0, to = 0.10, by = 0.001))
+cal <- cal %>%
+  mutate(erp = rf + sharpe * sdp) %>%
+  filter(erp <= 0.2)
+
+ojs_define(cal_ojs = cal)
+
+```
+
+```{ojs}
+//| panel: sidebar
+
+viewof utility_level1 = Inputs.range(
+  [0, 0.14], 
+  {value: 0, step: 0.001, label: "Utility Level"}
+)
+
+viewof ra1 = Inputs.radio(
+  ["Low", "High"], 
+  { value: "High", 
+    label: "Risk Aversion"}
+)
+```
+
+```{ojs}
+
+filtered_ute1 = transpose(pfl3_ute_ojs).filter(function(ute) {
+  return utility_level1 == ute.ceq && ra1 == ute.riskaversion;
+})
+
+Plot.plot({
+  x: { label: "Standard Deviation", tickFormat: ".0%", ticks: 11, line: true, grid: true, domain: [0, 0.10]},
+  y: { label: "Expected Return", tickFormat: ".0%", zero:true, line: true, grid: true, domain:[0,0.2]},
+  marks: [
+    Plot.ruleY([0], {filter: false}),
+    Plot.ruleX([0], {filter: false}),
+    Plot.line(transpose(cal_ojs), { x: "sdp", y: "erp", stroke:"orange",}),
+    Plot.line(transpose(pfl3_ojs), { x: "sdp", y: "erp", stroke: "blue"}),
+    Plot.line(filtered_ute1, { x: "sdp", y: "erp", stroke: "red"})],
+  style: {
+    color: "#0b1554",
+    fontFamily: "Arial",
+    fontSize: "20px",
+    overflow: "visible"
+  },
+  height:500, width: 900, margin: 50
+})
+```
+## Conclusion
+
+- How do we calculate the risk and return of portfolios?
+- How do investors benefit from diversification?
+  - The correlation between assets in the portfolio
+  - The number of assets in the portfolio 
+- What portfolios maximise investor utility?
+  - Investors choose different risky portfolios based on their risk aversion when there is no borrowing or lending
+  - When risk-free borrowing and lending is introduced each investor holds the same risky portfolio and then either borrows or lends to maximise their utility
+
+\
+
+- Next week: Capital Asset Pricing Model
+
+
+## Appendix {#sec-appendix visibility="uncounted" .smaller}
+$$
+\begin{align}
+  \text{Set} \ w_i=\frac{1}{n} \\
+  \sigma_p^2 &= \sum_{i=1}^{n} w_i^2 \sigma_i^2 + \underset{i \ne j}{\sum_{i=1}^{n} \sum_{j=1}^{n}} w_i w_j \sigma_{ij} \\
+  \sigma_p^2 &= \sum_{i=1}^{n} \frac{1}{n} \frac{1}{n} \sigma_i^2 + \underset{i \ne j}{\sum_{i=1}^{n} \sum_{j=1}^{n}} \frac{1}{n^2} \sigma_{ij} \\
+  &= \frac{1}{n} \overline{\sigma}_i^2 + \frac{1}{n^2} \underset{i \ne j}{\sum_{i=1}^{n} \sum_{j=1}^{n}} \sigma_{ij}\\
+  &= \frac{1}{n} \overline{\sigma}_i^2 + (n^2 - n) \frac{1}{n^2} \underbrace{\frac{1}{n^2 - n} \underset{i \ne j}{\sum_{i=1}^{n} \sum_{j=1}^{n}} \sigma_{ij}}_{\overline{\sigma}_{ij}} \\
+  &= \frac{1}{n} \overline{\sigma}_i^2 + (n^2 - n) \frac{1}{n^2} {\overline{\sigma}_{ij}} \\
+  &= \frac{1}{n} \overline{\sigma}_i^2 + \frac{n-1}{n} {\overline{\sigma}_{ij}}
+\end{align}
+$$
+
+[Back to Diversification slide](#sec-diversification)
