@@ -1,0 +1,485 @@
+---
+title: "Capital Asset Pricing Model"
+subtitle: "FIN 223 Lecture 4"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    html-table-processing: none
+    chalkboard: 
+      buttons: false
+      theme: whiteboard
+      boardmarker-width: 2
+      transition: 1
+      src: FIN223_chalkboard_L4.json
+execute: 
+  eval: true
+  echo: false
+---
+
+## Lecture outline
+
+- Where does the CAPM come from?
+- Utility maximising investors + mean-variance portfolios + assumptions
+- Why is the CAPM important?
+- Equilibrium expected returns on risky assets are calculated by the covariance of the stock with the market
+- What lessons can we learn from the CAPM? 
+- We can rethink the idea of portfolio risk and diversification
+
+\
+
+- Reading
+  - Ch 7.1-7.3, 6.5 (pp. 168-175)
+
+
+## CAPM assumptions
+
+1. There are many investors, each with an initial level of wealth which is small compared with the total level of wealth in the market
+    - Perfect competition market structure
+1. All investors plan for a single holding period of the same length
+1. Investments are restricted to a universe of publicly available assets and may borrow and invest at a fixed risk-free rate
+1. There are no taxes or transactions costs
+1. All investors are mean-variance optimisers 
+1. All investors create their opinions in the same way
+    - They thus have identical estimates for the probability distribution of assets returns and thus provide the exact same inputs into the mean-variance optimisation to select their portfolios
+    - Homogeneous expectations
+
+
+## CAPM assumptions
+
+- If all investors have the same information and form their beliefs in the same way then all investors find the exact same efficient frontier
+- All investors have the same utility function with different risk aversion (A)
+- With a risk-free asset the efficient frontier is the CML
+- The tangency portfolio is the market portfolio (M) and contains all assets 
+- If all investors hold this portfolio it must be the market portfolio
+- The market portfolio is the optimal risky portfolio
+- Prices will adjust in equilibrium such that every stock is included in the market portfolio in proportion to its market weight
+- Lenders and borrowers net each other out
+
+
+## The Capital Market Line (CML)
+
+- All investors choose the same risky portfolio on the CAL with the maximum Sharpe ratio
+
+```{r}
+#| output: false
+library(tidyverse)
+
+pfl4 <- tibble(w = seq(from = 0, to = 1, by = 0.001))
+
+pfl4 <- pfl4 %>%
+  mutate(reta = 0.02, retb = 0.2, sda = 0.08, sdb = 0.08, correl_ab = -0.6,
+         erp = w*reta + (1-w)*retb,
+         sdp = (w^2*sda^2 + (1-w)^2*sdb^2 + 2*w*(1-w)*correl_ab*sda*sdb)^0.5)
+
+ojs_define(pfl4_ojs = pfl4)
+
+E_L4 <- matrix(c(0.02, 0.2), nrow=2)
+ones_L4 <- matrix(c(1, 1), nrow=2)
+V_L4 <- matrix(c(0.08^2, 0.08*0.08*-0.6, 0.08*0.08*-0.6, 0.08^2), nrow=2)
+rf_L4 <- 0.04
+H_L4 <- t(E_L4- rf_L4*ones_L4) %*% solve(V_L4) %*% (E_L4- rf_L4*ones_L4)
+
+sharpe_max <- (as.numeric(H_L4))^0.5
+sharpe_L4 <- tibble(sharpe = seq(from = 0, to = 4, by = 0.01))
+cml <- tibble(sdp = seq(from = 0, to = 0.10, by = 0.001))
+
+cml <- crossing(cml, sharpe_L4)
+
+cml <- cml %>%
+  mutate(erp = rf_L4 + sharpe * sdp) %>%
+  filter(erp <= 0.2)
+
+ojs_define(cml_ojs = cml)
+
+```
+
+```{ojs}
+//| panel: sidebar
+
+viewof sharpeval = Inputs.range(
+  [0, 4], 
+  {value: 0, step: 0.01, label: "Sharpe Ratio"}
+)
+
+```
+
+```{ojs}
+
+filtered_sharpe = transpose(cml_ojs).filter(function(sfunc) {
+  return sharpeval == sfunc.sharpe;
+})
+
+Plot.plot({
+  x: { label: "Standard Deviation", tickFormat: ".0%", ticks: 11, line: true, grid: true, domain: [0, 0.10]},
+  y: { label: "Expected Return", tickFormat: ".0%", zero:true, line: true, grid: true, domain:[0,0.2]},
+  marks: [
+    Plot.ruleY([0], {filter: false}),
+    Plot.ruleX([0], {filter: false}),
+    Plot.line(transpose(pfl4_ojs), { x: "sdp", y: "erp", stroke: "blue"}),
+    Plot.line(filtered_sharpe, { x: "sdp", y: "erp", stroke: "red"})],
+  style: {
+    color: "#0b1554",
+    fontFamily: "Arial",
+    fontSize: "20px",
+    overflow: "visible"
+  },
+  height:500, width: 900, margin: 50
+})
+```
+
+## Individual securities
+
+- An individual security’s risk premium is a function of
+  - Its contribution to the risk of the market portfolio
+  - The covariance of returns with the assets that make up the market portfolio
+
+:::{.fragment}
+- Let's consider a market with three assets
+  
+$$\sigma_m^2 = w_1^2 \sigma_1^2 + w_2^2 \sigma_2^2 + w_3^2 \sigma_3^2 + 2 w_1 w_2  \sigma_{12} + 2 w_1 w_3  \sigma_{13} + 2 w_2 w_3  \sigma_{23}$$  
+
+:::
+
+:::{.fragment}
+- Covariance of BHP returns with the returns on the market portfolio
+
+$$\sum_{i=1}^nw_i Cov(R_i, R_{BHP}) = Cov \left(\sum_{i=1}^nw_i R_i, R_{BHP}\right)$$
+
+:::
+
+:::{.fragment}
+- The reward-to-risk ratio is
+
+$$\frac{\text{BHP contribution to risk premium}}{\text{BHP contribution to variance}} = \frac{E(R_{BHP})-R_f}{Cov(R_{BHP},R_m)}$$
+
+:::
+
+
+## Individual securities
+
+- Reward-to-risk ratio for investment in market portfolio
+
+$$\frac{\text{Market risk premium}}{\text{Market variance}} = \frac{E(R_m)-R_f}{\sigma_m^2}$$
+
+:::{.fragment}
+- These reward-to-risk ratios should be the same across all assets and portfolios otherwise markets are not in equilibrium
+
+$$\frac{E(R_{BHP})-R_f}{Cov(R_{BHP},R_m)} = \frac{E(R_m)-R_f}{\sigma^2_m}$$
+:::
+
+:::{.fragment}
+- The risk premium for BHP is
+
+$$E(R_{BHP})-R_f = \frac{Cov(R_{BHP},R_m)}{\sigma^2_m} [E(R_m)-R_f]$$
+:::
+
+:::{.fragment}
+- Restating, we obtain:
+
+$$E(R_{BHP}) = R_f + \beta_{BHP}[E(R_m)-R_f]$$
+:::
+
+
+## Expected return-beta relationship
+
+- The measure of risk in the CAPM is 
+
+$$\beta_i = \frac{Cov(R_i,R_m)}{\sigma^2_m}$$
+
+:::{.fragment}
+- The CAPM holds for any asset or portfolio:
+
+$$E(R_{p}) = R_f + \beta_{p}[E(R_m)-R_f]$$
+:::
+
+:::{.fragment}
+- Portfolio values are weighted averages of the underlying assets
+
+$$E(R_p) = \sum_{i=1}^{n} w_iE(R_i)$$
+$$\beta_p = \sum_{i=1}^{n} w_i \beta_i$$
+:::
+
+## Lessons from the CAPM
+
+- Don’t hold individual assets, hold a diversified portfolio
+  - Diversify away idiosyncratic risk as it is not priced
+
+:::{.fragment}
+- Each investor has their own optimal exposure to systematic risk  
+  - Investor’s portfolio betas will differ
+:::
+
+:::{.fragment}
+- Risk is beta
+  - High beta means lower diversification benefit
+  - Investors accept a lower return for low beta securities because they provide higher diversification benefits 
+  - A lower expected return implies that investors are willing to pay a higher price for these assets
+  
+$$
+\begin{align}
+\beta_i &= \frac{\sigma_{im}}{\sigma^2_m} \\[3px]
+        &= \frac{\rho_{im} \sigma_i \sigma_m}{\sigma_m^2} \\[3px]
+        &= \rho_{im} \frac{\sigma_i}{\sigma_m}
+\end{align}
+$$
+:::
+
+
+## The Security Market Line (SML)
+
+- The equation for the CAPM plots a linear relationship between an asset’s beta and its expected return
+- CAPM says all assets lie on SML
+  - In reality, some do not
+- The difference between the SML and a stock’s actual return is called alpha
+- Stocks above the SML are positive alpha stocks
+  - These stocks are under-priced
+- Stocks below the SML are negative alpha stocks
+  - These stocks are over-priced
+
+
+## The Security Market Line (SML)
+
+
+## Does the CAPM work in reality?
+
+- The CAPM fails because the assumptions are unreasonable
+  - Investors have only financial wealth
+  - Investors have mean-variance utility
+  - Single period investment
+  - Investors have homogeneous expectations
+  - No taxes and transaction costs
+  - Investors are price takers
+  - Information is costless and available to all
+
+\
+
+- When assumptions are removed we get a different model
+  - Some models are similar to CAPM as they only have one factor
+  - Some models result in multiple factors
+
+
+
+## Estimating the Single Index Model
+
+- When we estimate the CAPM it becomes a Single-Index Model (SIM)
+- We can estimate the SIM using the following regression:
+
+$$R_{it}-R_{ft} = \alpha_i + \beta_i(R_{mt}-R_{ft}) + \varepsilon _{it}$$
+
+- $R_{it}$ is the return on asset $i$ in period $t$
+- $R_{ft}$ is the risk-free return in period $t$
+- $R_{mt}$ is the return on the factor in period $t$
+- $\alpha_i$is the constant component of asset $i$’s return
+- $\beta_i$ is the sensitivity of asset $i$’s return with the market return
+- $\varepsilon_{it}$ is residual component of asset $i$’s return in period $t$ that is not explained by the market return
+
+
+## Estimating the Single Index Model
+
+```{r}
+
+library(ggplot2)
+
+beta <- 1.3
+alpha <- 0.02
+sd_err <- 0.04
+beta1 <- 0.5
+alpha1 <- -0.04
+sd_err1 <- 0.08
+
+capm <- tibble(rm = rnorm(n = 500, mean = 0.02, sd = 0.04))
+capm <- capm %>%
+  mutate(err = rnorm(n = 500, mean = 0, sd = sd_err),
+         ri = alpha + beta * rm + err,
+         err1 = rnorm(n = 500, mean = 0, sd = sd_err1),
+         ri1 = alpha1 + beta1 * rm + err1)
+
+
+
+```
+
+- For this asset $\alpha = `r alpha`$, $\beta = `r beta`$ and $\sigma_{\varepsilon_i} = `r sd_err`$
+
+```{r}
+ggplot(capm, aes(x = rm, y = ri)) +
+  geom_point(color = "orange") +
+  geom_smooth(method=lm , color="blue", se=FALSE) +
+  geom_hline(yintercept= 0) +
+  geom_vline(xintercept= 0) +
+  labs(x = "Excess Return on the Market", y = "Excess Return on the Stock") +
+  theme(axis.title.x = element_text(size=16),
+        axis.title.y = element_text(size=16),
+        axis.text = element_text(size=16),
+        panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.5),
+        panel.grid.major.y = element_line(colour = "grey", linewidth = 0.05, linetype = "dotted"),
+        panel.grid.major.x = element_line(colour = "grey", linewidth = 0.05, linetype = "dotted"),
+        text = element_text(family ="sans"),
+        axis.ticks = element_blank(),
+        plot.caption = element_text(hjust = 0),
+        plot.margin = margin(0.5, 1, 0, 0, "cm"),) +
+  scale_y_continuous(expand = expansion(mult = 0),
+                     breaks = seq(-0.2, 0.2, 0.05),
+                     limits = c(-0.2, 0.2),
+                     label=scales::label_percent()) +
+  scale_x_continuous(expand = expansion(mult = 0),
+                     breaks = seq(-0.1, 0.15, 0.05),
+                     limits = c(-0.1, 0.15),
+                     label=scales::label_percent())
+
+```
+
+
+## Estimating the Single Index Model
+
+- For this asset $\alpha = `r alpha1`$, $\beta = `r beta1`$ and $\sigma_{\varepsilon_i} = `r sd_err1`$
+
+```{r}
+
+ggplot(capm, aes(x = rm, y = ri1)) +
+  geom_point(color = "lightblue") +
+  geom_smooth(method=lm , color="red", se=FALSE) +
+  geom_hline(yintercept= 0) +
+  geom_vline(xintercept= 0) +
+  labs(x = "Excess Return on the Market", y = "Excess Return on the Stock") +
+  theme(axis.title.x = element_text(size=16),
+        axis.title.y = element_text(size=16),
+        axis.text = element_text(size=16),
+        panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.5),
+        panel.grid.major.y = element_line(colour = "grey", linewidth = 0.05, linetype = "dotted"),
+        panel.grid.major.x = element_line(colour = "grey", linewidth = 0.05, linetype = "dotted"),
+        text = element_text(family ="sans"),
+        axis.ticks = element_blank(),
+        plot.caption = element_text(hjust = 0),
+        plot.margin = margin(0.5, 1, 0, 0, "cm"),) +
+  scale_y_continuous(expand = expansion(mult = 0),
+                     breaks = seq(-0.2, 0.2, 0.05),
+                     limits = c(-0.2, 0.2),
+                     label=scales::label_percent()) +
+  scale_x_continuous(expand = expansion(mult = 0),
+                     breaks = seq(-0.1, 0.15, 0.05),
+                     limits = c(-0.1, 0.15),
+                     label=scales::label_percent())
+
+```
+
+
+## Decomposing total risk
+
+- There are some important assumptions about the residual return $(\varepsilon_{it})$ in the previous regression equation
+
+:::{.fragment}
+- The residual ($\varepsilon_{it}$) is assumed to be uncorrelated across assets
+  - $Cov(\varepsilon_{it}, \varepsilon_{kt})=0$
+:::
+
+:::{.fragment}
+- The residual ($\varepsilon_{it}$) is assumed to be uncorrelated across time
+  - $Cov(\varepsilon_{it}, \varepsilon_{it-1})=0$
+:::
+
+:::{.fragment}
+- The residual ($\varepsilon_{it}$) is assumed to be uncorrelated with the market return $(R_{mt})$
+  - $Cov(\varepsilon_{it}, R_{mt})=0$
+:::
+
+:::{.fragment}
+- The residual is assumed to have a mean of zero and a variance of $\sigma^2_{\varepsilon_i}$
+:::
+
+
+## Decomposing total risk
+
+- The expected return for asset $i$ is
+
+$$R_{it}-R_{ft} = \alpha_i + \beta_i(R_{mt}-R_{ft}) + \varepsilon_{it}$$
+
+:::{.fragment}
+- Total risk is the sum of undiversifiable and diversifiable risk
+
+$$
+\begin{align}
+Var(R_{it}-R_{ft}) &= Var(\alpha_i) + Var(\beta_i[R_{mt}-R_{ft}]) + Var(\varepsilon_{it}) \\[3px]
+\sigma_i^2 &= \sigma_m^2 \times \beta_i^2 + \sigma^2_{\varepsilon_i}
+\end{align}
+$$
+:::
+
+:::{.fragment}
+- Diversifiable risk results from factors that are firm-specific
+  - Also called idiosyncratic or firm-specific risk
+  - Examples: whether a company's new product succeeds or fails, the performance of senior managers, or a firms’ relationship with its customers and suppliers
+:::
+
+:::{.fragment}
+- Undiversifiable risk is the part of risk you cannot diversify away
+  - Also called systematic or market risk
+  - Associated with broad forces such as economic growth, inflation, interest rates, political events or health pandemics
+:::
+
+
+## Diversification revisited
+
+- The return on a portfolio is:
+
+$$
+\begin{align}
+R_p &= \sum_{i=1}^n w_i R_i \\
+    &= \sum_{i=1}^n w_i \left[ \alpha_i + \beta_i(R_m - R_f) + \varepsilon _{i} \right] \\
+    &= \sum_{i=1}^n w_i \alpha_i + \sum_{i=1}^n w_i \beta_i(R_m-R_f) + \sum_{i=1}^n w_i \varepsilon _{i}\\
+    &= \alpha_p + \beta_p(R_m - R_f) + \varepsilon_{p}
+\end{align}
+$$
+
+- Let’s assume that portfolios are equally weighted $(w_i = \frac{1}{n})$
+- The portfolio alpha, beta and residual return are therefore the averages of the individual asset values
+
+
+## Diversification revisited
+
+- Consider now the variance of returns for this portfolio
+
+$$\sigma_p^2 = \sigma_m^2 \times \beta_p^2 + \sigma^2_{\varepsilon_p}$$
+
+:::{.fragment}
+- Given that all the firm-specific returns are assumed to be independent
+
+$$\sigma^2_{\varepsilon_p} = \sum_{i=1}^n \sum_{j=1}^n w_i w_j \sigma_{\varepsilon_i} \sigma_{\varepsilon_j} \rho_{\varepsilon_i \varepsilon_j}
+ $$
+$$\sigma^2_{\varepsilon_p} = \left(\frac{1}{n}\right)^2 \sum_{i=1}^n \sigma^2_{\varepsilon_i} = \frac{1}{n}\overline{\sigma}^2_{\varepsilon}$$
+:::
+
+:::{.fragment}
+- As more assets are added to the portfolio $(n \uparrow)$
+  - Portfolio idiosyncratic variance approaches zero $(\sigma^2_{\varepsilon_p} \rightarrow 0)$
+  - Portfolio systematic risk approaches
+
+$$\sigma_p^2 \rightarrow \sigma_m^2 \times \beta_p^2$$
+:::
+
+
+## Diversification revisited
+
+<!-- chart of declining portfolio risk as N increases approaching beta sqd x var m -->
+
+
+
+## Conclusion
+
+- The CAPM provides a useful conceptual framework for evaluating and linking risk and return
+- Widely used in finance
+  - Many surveys show the primary method that companies use to determine the required rate of return on their stock is the CAPM
+- But, nothing is perfect
+  - CAPM generally relies on historical data since the value of beta used in the model is typically based on calculations using historical returns
+  - Betas estimated from historical data may not accurately reflect how the company’s stock will perform relative to the overall market in the future
+- The SIM provides accurate intuition on how to think about diversification and idiosyncratic risk
+
+
+\
+
+- Next week: Market Efficiency
+
