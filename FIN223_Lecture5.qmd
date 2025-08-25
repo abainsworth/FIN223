@@ -39,7 +39,7 @@ execute:
 
 ## Are markets efficient?
 
-![](Fama_shiller.png)
+![](./Fama_shiller.png)
 
 
 ## Determination of prices
@@ -337,5 +337,5 @@ Source: [Rendleman, Jones and Latane (1982)](https://www.sciencedirect.com/scien
 
 :::{.fragment}
 
-![](Fama_shiller.png){width="40%" fig-align="center"}
+![](./Fama_shiller.png){width="40%" fig-align="center"}
 :::
