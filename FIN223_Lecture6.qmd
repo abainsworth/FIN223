@@ -1,0 +1,222 @@
+---
+title: "Behavioural Finance"
+subtitle: "FIN 223 Lecture 6"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    html-table-processing: none
+    chalkboard: 
+      buttons: false
+      theme: whiteboard
+      boardmarker-width: 2
+      transition: 1
+      #src: FIN223_chalkboard_L4.json
+execute: 
+  eval: true
+  echo: false
+---
+
+## Lecture outline
+
+- Behavioural Finance
+  - Does the behavioural biases of market participants influence asset prices?
+  - Do the models we have discussed thus far accurately represent reality?
+- Limits to arbitrage
+  - Why can’t arbitrageurs take advantage of mispricing?
+
+\
+
+- Reading
+  - BKM Ch. 9
+
+
+## How do investors behave?
+
+- Conventional Finance
+  - Risk averse utility maximisers
+  - “Rational” investors
+  - Incorporate all information into decision making
+  - Resources are allocated efficiently
+  - Prices are correct - they equal intrinsic value
+
+:::{.fragment}
+- Is this correct? Are you a rational investor?
+  - Investors are humans (sometimes)
+  - Behavioural finance incorporates psychology into economic decision making
+  - Systematic psychological biases will not disappear in aggregate
+- Do these behavioural factors lead to market inefficiency?
+- Are anomalies found in financial markets because people are not rational investors?
+:::
+
+
+## The behavioural critique
+
+- There are two categories of irrationalities
+
+\
+
+1. Investors do not always process information correctly
+- Result: Investors have the incorrect probability distribution of future returns
+
+\
+
+2. Even when given the correct probability distribution of returns, investors may make inconsistent or suboptimal decisions
+- Result: Investors exhibit behavioural biases
+
+
+## Errors in information processing
+
+- These errors can lead to investors incorrectly estimating probabilities 
+- Limited attention
+  - If investors are time-constrained then they may rely on "rules of thumb"
+  - Investors may overreact to attention grabbing news
+  - Investors may underreact to less prominent information
+- Overconfidence
+  - Investors overestimate their abilities and the precision of their forecasts
+  - For example, active portfolio managers think they can pick winners
+  - Females trade less than males and earn higher returns
+  - Overconfidence could lead to price overreactions
+
+
+## Errors in information processing
+
+- Conservatism
+  - Investors are slow to update their beliefs and under react to new information
+  - Belief perseverance
+  - This could lead to underreactions (e.g. post-earnings announcement drift, price momentum)
+- Confirmation bias
+  - Investors can have a tendency to selectively interpret information that is consistent with the investment view and disregard information that conflicts with their beliefs
+- Sample size neglect and representativeness
+  - Investors are too quick to infer a pattern or trend from a small sample
+  - Investors then extrapolate that pattern into the future
+  - In general, people evaluate the probability of an uncertain event by the degree to which the event is representative or similar (in their mind) to the population regardless of past probabilities $\rightarrow$ stereotyping
+    - Tech stocks are winners
+    - House prices never go down
+  - How do people make probability based decisions?
+    - Rational investors consider population probabilities
+
+
+## Behavioural biases
+
+- Behavioural biases result in less than rational decisions, even with perfect information
+- Framing: 
+  - How the risk is described “risky losses” vs. “risky gains” can affect investor decisions
+  - Experimental evidence shows that people prefer risk-free gains (risk averse behaviour) and prefer risky losses (risk seeking behaviour)
+  - Loss aversion: people weigh losses more than gains in their decision making
+  - Loss aversion suggests that decision making is sensitive to how alternatives are framed
+
+
+## Do you like to gamble?
+
+- You can choose to participate in one of the two gambles below
+
+\
+
+1. You have been given a gift of $20,000. In addition, you can choose between:
+    a. a sure gain of $5,000 or
+    b. a 25% chance of a gain of $20,000, or a 75% chance of receiving $0
+1. You have been given a gift of $40,000. In addition, you can choose between:
+    a. a sure loss of $15,000 or
+    b. a 75% chance of a loss of $20,000, or a 25% chance of losing $0
+
+\
+
+- Would you prefer option 1 or option 2?
+
+
+## Do you like to gamble?
+
+- Let's calculate expected values
+
+\
+
+- Option 1
+  - A: $25000
+  - B: Expected value of 20000 + 0.25 * 20000 = $25000
+- Option 2
+  - A: $25000
+  - B: Expected value of 40000 – 0.75 * 20000 = $25000
+
+
+## Behavioural biases
+
+- Mental accounting
+  - This form of framing involves investors behaving differently with different investment accounts/stocks (different risk-aversion for different accounts/stocks)
+  - The "house money effect"
+- Disposition effect
+  - It has been documented that investors do not like to sell stocks where the current price is below the purchase price and crystallize a capital loss
+- Regret avoidance
+  - Investors will blame themselves for poor investment decisions if the decision was unconventional
+  - This could make investors less likely to invest in unconventional assets
+
+  
+## Limits to arbitrage
+
+- Behavioural biases would not matter if rational arbitrageurs could fully exploit the mistakes of behavioural investors
+- Fundamental risk
+  - “Markets can remain irrational longer than you can remain solvent”
+  - Intrinsic value and market value may take too long to converge
+  - New information may arrive that affects fundamental value that you cannot hedge
+- Implementation costs
+  - Transactions costs and restrictions on short selling can limit arbitrage activity
+- Model risk
+  - What if you have a bad model and the market value is actually correct?
+  - Your estimate of firm value might be incorrect
+
+
+## Limits to arbitrage 
+
+- The law of one price states that identical assets should sell for the same price
+  - Lamont, O.A., and Thaler, R.H. (2003). ["Anomalies: The Law of One Price in Financial Markets"](https://uow.primo.exlibrisgroup.com/permalink/61UOW_INST/otb3u8/cdi_unpaywall_primary_10_1257_089533003772034952){target=_blank}, *Journal of Economic Perspectives*, vol. 17(4), pp. 191-202.
+
+:::{.fragment}
+- Royal Dutch and Shell merged with cash flows being split 60/40 to shareholders
+  - Royal Dutch should sell for 1.5 times Shell
+:::
+
+:::{.fragment}
+![](RoyalDutch.png){fig-align="center" width=70%}
+:::
+
+<!-- - Why did prices deviate from parity? Possibly because Royal Dutch was a constituent of the S&P500 so index funds needed to own the Royal Dutch version of the stock (excess demand) -->
+
+
+## Publication of research and anomalies
+
+- McLean, R. and Pontiff, J. (2016). ["Does Academic Research Destroy Stock Return Predictability?"](https://onlinelibrary.wiley.com/doi/full/10.1111/jofi.12365){target=_blank} *The Journal of Finance*,  vol. 71, pp. 5-32.
+  - They examine returns on 97 anomaly trading strategies after they have been published in academic finance journals 
+  - The returns to these strategies are 58% lower after the article has been published 
+  - Our findings suggest that investors learn about mispricing from academic publications
+
+:::{.fragment}
+- Jacobs, H. & Muller S. (2020). ["Anomalies across the globe: Once public, no longer existent?"](https://www.sciencedirect.com/science/article/pii/S0304405X19301618){target=_blank} *Journal of Financial Economics*, vol. 135, pp. 213-230.
+  - Study the pre- and post-publication return predictability of 241 cross-sectional anomalies in 39 stock markets
+  - Based on more than two million anomaly country-months, they find that the United States is the only country with a reliable post-publication decline in long/short returns
+  - Their analysis of return predictors suggests that barriers to arbitrage trading may create segmented markets and that anomalies tend to represent mispricing rather than data mining
+:::
+
+
+## Anomalies and news
+
+- Engelberg, J., McLean, R. D., & Pontiff, J. (2018) ["Anomalies and news"](https://onlinelibrary.wiley.com/doi/full/10.1111/jofi.12718){target=_blank}, *The Journal of Finance*, vol 73(5), pp.1971-2001.
+  - Using a sample of 97 stock return anomalies documented in published studies, they find that anomaly returns are 6 times higher on earnings announcement days and 50% higher on corporate news days
+  - The effects are similar on both the long and short sides, and they survive adjustments for risk exposure and data mining
+  - Anomaly signals predict errors in analysts’ earnings forecasts 
+  - Analysts’ forecasts are systematically too low for anomaly-longs and too high for anomaly-shorts
+  - Their results support the view that anomaly returns are the result of biased expectations, which are at least partially corrected upon news arrival
+
+
+## Conclusion
+
+- Behavioural finance takes account of how people behave
+- Behavioural finance can help explain anomalies
+- Limits to arbitrage can restrict investors from taking advantage of mispricing in financial markets
+
+\
+
+:::{.fragment}
+- Do you think you are exhibiting any behavioural biases with your investment decisions?
+:::
