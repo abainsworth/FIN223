@@ -1,0 +1,340 @@
+---
+title: "Portfolio Performance Evaluation"
+subtitle: "FIN 223 Lecture 8"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    html-table-processing: none
+    chalkboard: 
+      buttons: false
+      theme: whiteboard
+      boardmarker-width: 2
+      transition: 1
+      src: FIN223_chalkboard_L8.json
+auto-play-media: true
+execute: 
+  eval: true
+  echo: false
+---
+
+## Lecture outline
+
+- How can we assess the performance of different investment managers?
+  - There are a large number of metrics available
+- Can investment managers select the best assets or can they time the market?
+  - These are two sources of investment manager skill
+- How can we decompose fund performance to identify how the fund generated its performance?
+  - Performance attribution
+  - Asset allocation
+  - Stock selection
+
+\
+
+- Reading: BKM Ch. 18.1, 18.5, 18.6
+
+
+## Why measure performance?
+
+- The managed funds industry places an emphasis on performance measures
+- Examples include:
+  - The star ratings of [Morningstar](https://www.morningstar.com.au/funds/morningstar-ratings-star-ratings-and-their-limitations){target="_blank"}
+  - [Lonsec](https://www.lonsec.com.au/investment-product-ratings/){target="_blank"} investment product ratings: "These ratings reflect Lonsec’s degree of conviction in the financial products’ ability to generate risk adjusted returns in line with relevant objectives"
+  - Statistics and rankings of funds based on past performance that are regularly reported by the Australian Financial Review
+- Performance measurement allows us to try to assess the skill of fund managers
+- Is the return a managed fund provides reflective of skill or just the risk that a manager has been exposed to?
+
+
+## Past performance
+
+- Past information is typically regarded as an important input in investment decisions
+- Australian Securities and Investments Commission (ASIC) revealed that past performance is included in 70% of commercial advertisements
+- Of these, 65% report past performance figures based on only one year of prior data
+- Empirical research has found that past performance correlates with future fund flows
+
+## Past performance
+
+{{< video https://www.youtube.com/embed/_k8B5GY_cik?start=22&end=31
+    width="100%" height="85%"
+    >}}
+
+
+## Active return and index benchmarks
+
+- Comparisons are made to a pre-selected benchmark portfolio, which is typically an index (e.g. S&P/ASX 300, FTSE 100, S&P500, NASDAQ)
+  - The benchmark is related to the fund objective
+- Active return is the difference in returns between the fund portfolio and the benchmark
+
+$$\text{Active Return} = R_{pt} - R_{bt}$$
+
+
+- Success of passive managers is measured by the standard deviation of active return, otherwise known as tracking error (TE): 
+
+$$TE = Std \ Dev (R_{pt} - R_{bt})$$
+
+- $R_{pt}$ is the portfolio return over time period $t$
+- $R_{bt}$ is the benchmark return over time period $t$
+
+
+## Active return and index benchmarks
+
+![](Fund_Active_Return.png){fig-align="center"}
+
+<!--- Tracking error
+  - VANGUARD 0.22%
+  - YARRA 1.22%
+  - AUSBIL 2.31%
+-->
+
+
+## Adjusting returns for risk
+
+- A simple way to adjust returns for risk is to compare the portfolio’s return with the returns on a comparison universe
+- The comparison universe is a group of funds with similar risk characteristics
+- Let’s compare the Schroder Equity fund to the large-cap Australian equity fund universe
+
+::: {.fragment}
+```{r}
+library(gt)
+library(dplyr)
+
+fundperf <- data.frame(stat = c("Minimum", "25th Percentile", "Median", "75th Percentile", "Maximum", "Schroder Equity Fund"), mo3 = c(-6.27,	-0.31,	0.23,	1.21,	7.71,	1.32), 
+        yr1 = c(-4.02, 3.84,	5.80, 7.87, 28.16, 7.33), yr2 = c(2.25,	8.64,	10.7,	12.26,	19.20,	13.96), yr3 = c(-11.22,	3.59,	4.94,	6.15,	15.84,	5.77), yr5 = c(0.86,	5.68,	6.81,	7.81,	15.25,	7.20))
+
+
+fundperf_gt <- fundperf %>%
+  gt(id = "rat") %>%
+  cols_label(stat = md(""), mo3 = md("3 months"), yr1 = md("1 year"), yr2 = md("2 years"), yr3 = md("3 years"), 
+             yr5 = md("5 years")) %>%
+  fmt_number(columns = everything(), decimals = 2) %>%
+  cols_align_decimal(columns = everything()) %>%
+  tab_options(table_body.hlines.style = "none",
+              table.width = pct(100)) %>%
+  opt_table_font(font = google_font(name = "Montserrat"), size = 24, color = "#0b1554") %>%
+  tab_style(style = cell_borders(sides = c("top", "bottom"), color = "#0b1554", weight = px(2)),
+            locations = cells_column_labels()) %>%
+  tab_style(style = cell_borders(sides = c("top", "bottom"), color = "#0b1554", weight = px(2)),
+            locations = cells_column_spanners()) %>%
+  tab_style(style = cell_borders(sides = c("b"), color = "#0b1554", weight = px(2)),
+            locations = cells_body(columns = everything(), rows = nrow(fundperf))) %>%
+  tab_style(style = list(cell_fill(color = "lightblue")), 
+            locations = cells_body(columns = everything(), rows = nrow(fundperf)))
+
+fundperf_gt
+
+```
+:::
+
+
+
+## Risk-adjusted performance
+
+- Sharpe ratio:
+
+$$\frac{\overline{R}_p - \overline{R}_f}{\sigma_p}$$
+
+- $\overline{R}_p$ is the average return on the portfolio 
+- $\overline{R}_f$ is the average risk free rate
+- ${\sigma_p}$ is the standard deviation of portfolio return
+
+\
+
+- Where have you seen this before?
+
+::: {.fragment}
+- It is the slope of the capital allocation line
+- The benchmark value is the Sharpe index for the market
+- It does not rely on an asset pricing model
+- It captures jointly aspects of return and risk
+:::
+
+
+## Risk-adjusted performance
+
+- Treynor measure:
+
+$$\frac{\overline{R}_p - \overline{R}_f}{\beta_p}$$
+
+- $\overline{R}_p$ is the average return on the portfolio 
+- $\overline{R}_f$ is the average risk free rate
+- ${\beta_p}$ is the beta of the portfolio
+
+\
+
+- Where have you seen this before?
+
+::: {.fragment}
+- It is the slope of the security market line
+- Superior performance indicated where the Treynor index exceeds the market risk premium (MRP)
+- Problems include estimating beta and the appropriateness of CAPM
+:::
+
+## Risk-adjusted performance
+
+- Jensen’s alpha uses data of a given frequency (t) to estimate a regression
+
+$$R_{pt}-R_{ft} = \alpha_p + \beta_p(R_{mt}-R_{ft}) + \varepsilon_{pt}$$
+
+- $R_{pt}$ is the return on the portfolio
+- $R_{ft}$ is the risk-free rate
+- $R_{mt}$ is the return on the market portfolio
+- $\alpha_p$, $\beta_p$, $\varepsilon_{pt}$ are as defined in lecture 4
+
+\
+
+- Jensen’s alpha relies upon the CAPM being the correct model
+- If a fund is performing to expectations (relative to the CAPM) then $\alpha$ would be zero
+- Positive alpha indicates superior performance while negative alpha indicates under-performance
+
+
+## Risk-adjusted performance
+
+- The information ratio measures how much alpha was generated from diversifiable risk
+
+$$IR = \frac{\alpha_p}{\sigma_{\varepsilon_p}}$$
+
+::: {.fragment}
+- The information ratio is sometimes calculated as
+
+$$IR = \frac{(\overline{R}_{p} - \overline{R}_{b})}{Std \ Dev(R_{pt} - R_{bt})}$$
+
+- $R_b$ is the return on the benchmark
+- The second approach is equivalent to the first if the beta of the fund equals 1
+:::
+
+## Which measure is appropriate?
+
+- It depends on the investment portfolio
+- If the portfolio represents the entire risky investment, then use the Sharpe measure
+  - The investor should care about total risk
+- If the portfolio is one of many combined into a larger investment fund, use the Jensen or the Treynor measure
+  - The investor is well diversified so should focus on systematic risk
+  - The Treynor measure is appealing because it weighs excess returns against systematic risk
+
+
+## Which measure is appropriate?
+
+- Consider two funds: the RXK Defensive fund and the BGT Super-Growth fund
+- Does RXK or BGT have the best performance?
+
+\
+
+```{r}
+
+compare <- data.frame(stat = c("Beta", "Excess Return", "Alpha"), rxk = c(0.9, "11%", "2%"), 
+        bgt = c(1.6, "19%",	"3%"), mkt = c(1,	"10%", "0%"))
+
+
+compare_gt <- compare %>%
+  gt(id = "rat1") %>%
+  cols_label(stat = md(""), rxk = md("RXK Defensive"), bgt = md("BGT Super-Growth"), mkt = md("Market")) %>%
+  cols_align(align = "center", columns = c("rxk", "bgt", "mkt")) %>%
+  tab_options(table_body.hlines.style = "none",
+              table.width = pct(100)) %>%
+  opt_table_font(font = google_font(name = "Montserrat"), size = 24, color = "#0b1554") %>%
+  tab_style(style = cell_borders(sides = c("top", "bottom"), color = "#0b1554", weight = px(2)),
+            locations = cells_column_labels()) %>%
+  tab_style(style = cell_borders(sides = c("top", "bottom"), color = "#0b1554", weight = px(2)),
+            locations = cells_column_spanners()) %>%
+  tab_style(style = cell_borders(sides = c("b"), color = "#0b1554", weight = px(2)),
+            locations = cells_body(columns = everything(), rows = nrow(compare)))
+
+compare_gt
+
+```
+
+
+## Which measure is appropriate?
+
+<!-- hand drawn chart -->
+
+
+## Market timing
+
+<!-- hand drawn chart -->
+
+
+## Market timing
+
+- In its pure form, market timing involves shifting funds between a market-index portfolio and a risk-free asset
+- Treynor and Mazuy market timing model:
+
+$$R_{pt}-R_{ft} = \alpha_p + \beta_p(R_{mt}-R_{ft}) + \psi_p(R_{mt}-R_{ft})^2 + e_{pt}$$
+
+- A positive value of $\alpha_p$ is indicative of superior stock selection performance
+- A positive value for $\psi_p$ indicates superior market timing ability
+
+
+## Market timing
+
+- Merton (1981) defines market timing as performance relative to the risk-free rate
+- Managers can switch between equity and a risk-free asset, so portfolio return is comprised of a return on the equity market plus a put option on the equity market
+- Option is valuable when equity return falls below risk-free rate:
+
+$$R_{pt}-R_{ft} = \alpha_p + \beta_p(R_{mt}-R_{ft}) + \theta_p \text{Max}(0,R_{mt}-R_{ft}) + \xi_{pt}$$
+
+- Positive values of $\theta$ indicate market timing ability
+
+
+## Performance attribution
+
+- Where did the outperformance come from?
+- Decompose relative performance into security selection and asset allocation
+  - Market: Equity, fixed income, alternative investments, etc
+  - Industry: Industrials, Financials, Consumer Discretionary, etc  
+- Return on benchmark:
+
+$$R_b = \sum_{i=1}^N w_{bi} R_{bi}$$
+
+- Return on portfolio:
+
+$$R_p = \sum_{i=1}^N w_{pi} R_{pi}$$
+
+
+## Performance attribution
+
+- Net portfolio return:
+
+$$
+\begin{align}
+R_p - R_b &= \sum_{i=1}^N w_{pi} R_{pi} - \sum_{i=1}^N w_{bi} R_{bi}\\
+          &= \sum_{i=1}^N (w_{pi} R_{pi} - w_{bi} R_{bi})
+\end{align}
+$$
+
+- Total contribution from asset class $i$
+
+$$w_{pi} R_{pi} - w_{bi} R_{bi}$$
+
+- Contribution from asset allocation for asset class $i$
+
+$$(w_{pi} - w_{bi}) R_{bi}$$
+
+- Contribution from security selection for asset class $i$
+
+$$w_{pi}(R_{pi} - R_{bi})$$
+
+
+
+## Superannuation performance evaluation
+
+- The Australian Prudential Regulation Authority (APRA) regulates superannuation funds in Australia 
+- They undertake an [Annual Superannuation Performance Test](https://www.apra.gov.au/annual-superannuation-performance-test){target="_blank"} on superannuation funds
+- They utilise an attribution approach to determine if superannuation funds are outperforming their benchmark
+- They focus on net return AND an administration fees component
+- APRA “names and shames” poorly performing funds if their performance is more than 0.5% below their benchmark
+  - Funds must inform members that they have failed the performance test
+  - If a fund fails in two consecutive years, then the fund must close to new members
+
+
+## Conclusion
+
+- There are many different methods for evaluating investment performance
+- The key point is to take into account the risk inherent in the portfolio
+  - We cannot simply compare fund returns without considering fund risk
+- Market timing can add value to the fund by increasing the fund beta in up-markets and/or decreasing the fund beta in down markets
+  - This is difficult to achieve  
+- Performance attribution is used extensively in industry and decomposes outperformance into asset allocation skill and stock selection
+  - Does it adequately take into account risk?
