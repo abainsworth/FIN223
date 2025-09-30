@@ -1,0 +1,583 @@
+---
+title: "Bond Pricing"
+subtitle: "FIN 223 Lecture 9"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    html-table-processing: none
+    chalkboard: 
+      buttons: false
+      theme: whiteboard
+      boardmarker-width: 2
+      transition: 1
+      src: FIN223_chalkboard_L9.json
+execute: 
+  eval: true
+  echo: false
+---
+
+## Lecture outline
+
+- How do we price bonds?
+- What is the relationship between prices and yield?
+- How do we price Australian Government Securities (AGS)?
+- What is accrued interest?
+- Why do bond prices change?
+- How do we measure holding period returns?
+
+\
+
+- Reading
+  - BKM Ch. 10.1 – 10.5
+  - Australian Office of Financial Management (AOFM) [Pricing Formulae](https://www.aofm.gov.au/securities/treasury-bonds){target="_blank}
+  - AOFM [Information Memorandum on Treasury Bonds](https://www.aofm.gov.au/media/228){target="_blank}
+
+
+## Bond issuance
+
+![](bonds-on-issue-in-australia.gif){fig-align="center"}
+
+
+## Bond issuance
+
+![](non-government-bonds-on-issue-in-australia.gif){fig-align="center"}
+
+
+## Bond pricing
+
+- Determining the price of any financial instrument requires an estimate of the cash flows and the discount rate
+- Coupon
+  - The amount of annual interest income the issuer pays to the bondholder
+  - Set as a percentage of the bond’s par value
+- Principal value
+  - Also known as par value or face value
+  - The amount of capital that the borrower must repay at maturity
+- Maturity date
+  - The date when a bond matures and the principal must be repaid
+  - Time to maturity: amount of time remaining on a bond’s life until it matures
+- The required yield is know as the yield to maturity (YTM)
+  - The discount rate
+  - The required yield reflects the yield for financial instruments with comparable risk
+- Frequency of compounding/coupons
+  - Annual or semi-annual are most common
+
+
+## Bond pricing
+
+- Pricing an option-free bond with annual coupon payments ($\$C$) and face value ($\$F$)
+
+$$P = \frac{C}{(1+y)} + \frac{C}{(1+y)^2} + \frac{C}{(1+y)^3} + ... + \frac{F + C}{(1+y)^N}$$
+
+- $y$ is the internal rate of return that equates the discounted cash flows to the market price ($P$)
+  - Yield to maturity (YTM) or discount rate
+- Or, we can recognise that a bond is an annuity of $\$C$ and the repayment of principal ($\$F$)
+
+$$P=\frac{C}{y}\left[1-(1+y)^{-N}\right]+\frac{F}{(1+y)^N}$$
+
+
+## Bond pricing
+
+- The same formula applies if we are pricing a bond with semi-annual compounding
+- Ensure that the coupon rate and the yield are semi-annual (i.e. halved)
+- The number of periods is double the number of years the security is outstanding 
+
+$$P=\frac{\frac{C}{2}}{\frac{y}{2}}\left[1-(1+\frac{y}{2})^{-2N}\right]+\frac{F}{(1+\frac{y}{2})^{2N}}$$
+
+
+## Yield, coupon and price relationships
+
+- Premium bond
+- If $C>y$ then the bond trades at a premium (price > 1000)
+
+\
+
+- Discount bond
+- If $C<y$ then the bond trades at a discount (price < 1000)	
+
+\
+
+- Par bond
+- If $C=y$ then the bond trades at par (price = 1000)
+
+
+## Yield, coupon and price relationships
+
+```{r}
+#| output: false
+library(tidyverse)
+
+bond223 <- function(ytm, coup, ttm) {
+  if(ytm==0) {
+    price = 1000*(coup/100)*ttm+1000}
+  else {
+    price = (1000*(coup/100))/(ytm)*(1-((1+ytm)^-ttm))+1000/((1+ytm)^ttm)}
+}
+
+yields_223 <- tibble(Yield = seq(from = 0, to = 0.15, by = 0.005))
+coup_223 <- tibble(Coupon = seq(from = 0, to = 10, by = 0.5))
+ttm_223 <- tibble(Years = seq(from = 0, to = 30, by = 1))
+
+bond_prices_223 <- crossing(yields_223, coup_223, ttm_223)
+
+bond223_v = Vectorize(bond223)
+
+bond_prices_223 <- bond_prices_223 %>%
+  mutate(Price = bond223_v(Yield, Coupon, Years),
+         Years_TM = 30-Years,
+         YTM = Yield * 100)
+
+ojs_define(bond_prices_223_ojs = bond_prices_223)
+
+```
+
+```{ojs}
+//| panel: sidebar
+
+viewof Coupon_pick = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Coupon (%)"}
+)
+
+viewof ttm_pick = Inputs.range(
+  [2, 30], 
+  {value: 10, step: 1, label: "Time to Maturity"}
+)
+
+```
+
+```{ojs}
+
+filtered_dur = transpose(bond_prices_223_ojs).filter(function(dur) {
+  return Coupon_pick == dur.Coupon & ttm_pick == dur.Years;
+})
+
+Plot.plot({
+  x: { label: "Yield", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Price", zero:true, line: true, grid: true, domain: [0, 4000]},
+  marks: [Plot.line(filtered_dur, { x: "Yield", y: "Price", stroke: "red"})],
+    style: {
+      color: "#0b1554",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      overflow: "visible"
+    },
+    height:500, width: 900, margin: 60
+  })
+
+```
+
+
+## Pricing Australian Government Securities
+
+- There are specific rules for pricing Australian Government Securities (AGS)
+  - For example, maturity and coupon payments all occur on the 21st of the month and coupon payments are semi-annual
+  - Australian Office of Financial Management (AOFM) [Pricing Formulae](https://www.aofm.gov.au/securities/treasury-bonds){target="_blank}
+  - AOFM [Information Memorandum on Treasury Bonds](https://www.aofm.gov.au/media/228){target="_blank}
+- We can price bonds that have an integer period to maturity 
+  - That is, pricing the bond on a coupon payment date
+- We need to be able to price bonds that have a non-integer period to maturity
+  - These bonds can be either cum-interest or ex-interest
+
+
+## Integer period to maturity
+
+- Settlement date (SD) falls on a coupon payment date
+- Example: Pricing a 5.75% 21 October 2027 AGS
+- Coupon = $28.75 every six months
+- Principal of $1000 received on maturity
+- Settlement date: 21 April 2025
+- Assume YTM = 5.10%
+
+![](Timeline_AGS1.png){fig-align="center"}
+
+## Integer period to maturity
+
+- Employing the bond pricing formula
+
+$$
+\begin{align}
+P_0 &= \frac{C}{y}\left[1-(1+y)^{-N}\right]+\frac{F}{(1+y)^N} \\
+    &= \frac{28.75}{0.0255}\left[1-(1+0.0255)^{-5}\right]+\frac{1000}{(1+0.0255)^5} \\
+    &= 1015.077
+\end{align}
+$$
+
+
+- But, you already knew this from other subjects
+
+
+## Non-integer period to maturity
+
+- What about when settlement is not on a coupon payment date?
+- Pricing a 5.75% October 2027 AGS
+- Settlement date: 21 September 2025
+- Current YTM = 5.10%
+
+\
+
+
+![](Timeline_AGS2.png){fig-align="center"}
+
+## Non-integer period to maturity
+
+- Step 1
+  - Determine previous coupon payment date (PCD) and next coupon payment date (NCD)
+  - Determine bond price (P’) if settlement occurred on NCD
+  - Exclude the coupon paid on that date 
+  - The purchaser may not be entitled to it
+  - This will reduce to an integer period to maturity bond pricing problem
+
+\
+
+![](Timeline_AGS3.png){fig-align="center"}
+
+
+## Non-integer period to maturity
+
+- Employing the integer bond pricing formula
+
+$$
+\begin{align}
+P'  &= \frac{C}{y}\left[1-(1+y)^{-N}\right]+\frac{F}{(1+y)^N} \\
+    &= \frac{28.75}{0.0255}\left[1-(1+0.0255)^{-4}\right]+\frac{1000}{(1+0.0255)^4} \\
+    &= 1012.212
+\end{align}
+$$
+
+
+## Non-integer period to maturity
+
+- Step 2a
+  - Determine fraction of period (f) between SD and NCD to discount P’ back to SD
+
+![](Timeline_AGS4.png){fig-align="center"}
+
+$$
+\begin{align}
+f   &= \frac{NCD-SD}{NCD-PCD} \\
+    &= \frac{\text{Number of days between 21/9/2025 and 21/10/2025}}
+        {\text{Number of days between 21/4/2025 and 21/10/2025}} \\
+    &= \frac{30}{183}
+\end{align}
+$$
+
+
+## Non-integer period to maturity {.nostretch}
+
+- Step 2b
+  - Determine if bond is cum-interest or ex-interest
+  - The purchaser receives the coupon if the bond is trading cum-interest
+  - The purchaser does not receive the coupon if the bond is trading ex-interest
+  - Bond is cum-interest (CI) if more than 7 days between SD and NCD
+  - Bond is ex-interest (XI) if 7 or less days between SD and NCD
+  - Therefore, a bond is XI if SD is between the 14th and 21st in a coupon-payment month
+- This bond is **cum-interest** so we need to include coupon received on NCD in price
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](Timeline_AGS5.png){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+$$
+\begin{align}
+P_0  &= \frac{P'+C}{(1+y)^f} \\
+    &= \frac{1012.212 + 28.75}{(1.0255)^{\frac{30}{183}}} \\
+    &= 1036.674
+\end{align}
+$$
+:::
+
+::::
+
+
+## Non-integer period to maturity
+
+- Let’s assume the yield remains unchanged and price the same bond if the settlement date was 16 October 2025  
+- The bond is **ex-interest** so the buyer is not entitled to the next coupon payment on 21 October
+
+\
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](Timeline_AGS6.png){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+$$
+\begin{align}
+P_0  &= \frac{P'}{(1+y)^f} \\
+    &= \frac{1012.212}{(1.0255)^{\frac{5}{183}}} \\
+    &= 1011.516
+\end{align}
+$$
+:::
+
+::::
+
+
+## Change in the settlement price
+
+```{r}
+library(ggplot2)
+
+dates <- tibble(date = seq(as.Date('2025-09-01'), as.Date('2025-11-30'), by = 'days'))
+
+dates <- dates %>%
+  mutate(ex = case_when(date>='2025-10-14' &  date<'2025-10-21' ~ 1, .default = 0),
+         N = case_when(date<'2025-10-21' ~ 4, .default = 3),
+         NCD = case_when(date>='2025-10-21' ~ as.Date('2026-4-21'),
+                         date<'2025-10-21' ~ as.Date('2025-10-21')), 
+         PCD = case_when(date>='2025-10-21' ~ as.Date('2025-10-21'), 
+                         date<'2025-10-21' ~ as.Date('2025-04-21')), 
+         coupon = 28.75,
+         ytm = 0.0255,
+         f = as.integer(difftime(NCD, date, "days"))/as.integer(difftime(NCD, PCD, "days")))
+
+dirtyprices <- dates %>%
+  mutate(dirty = (coupon/ytm*(1-(1+ytm)^-N)+1000/(1+ytm)^N + coupon*(1-ex))/(1+ytm)^f,
+         clean = dirty - (1-ex)*coupon*(1-f) + ex*coupon*f)
+
+dirtyprices %>%
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = dirty), linewidth = 0.7, colour = 'brown') + 
+  labs(x = "Date", y = "Price ($)") +
+  theme(axis.title.x = element_text(size=12),
+        axis.title.y = element_text(size=12),
+        axis.text = element_text(size=12),
+        axis.text.x = element_text(angle = 45, vjust= 1, hjust = 1), 
+        panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.5),
+        panel.grid.major.y = element_line(colour = "grey", linewidth = 0.5, linetype = "dotted"),
+        text = element_text(family ="sans")) +
+  scale_y_continuous(limits = c(1000, 1040), 
+                     breaks = seq(1000, 1040, 5),
+                     expand = expansion(mult = 0)) +
+  scale_x_date(expand = expansion(mult = 0), 
+               date_breaks = "7 day",
+               date_labels = "%d-%b-%y")
+
+```
+
+
+## Accrued interest
+
+- Accrued interest takes into account the interest that is earned on a daily basis
+  - Coupon payment multiplied by days since last coupon as a percent of days between coupon payments
+- The invoice, settlement or dirty price is the price that is actually paid by traders
+- The quoted, flat or clean price adjusts the dirty price for the accrued interest
+- Quoted price can be used to examine changes in price caused by
+  - Change in the credit quality of issuer
+  - Change in the market yield 
+  - Change in time as maturity approaches
+
+
+## Cleaning the dirty price
+
+- $P_0$ is the invoice, settlement or dirty price
+- $P_{adj}$ is the quoted, flat or clean price
+- The adjustment for accrued interest depends on whether the bond is trading cum-interest or ex-interest
+- If bond is trading cum-interest then the accrued interest between PCD and SD needs to be deducted
+
+$$P_{adj} = P_0 - C(1-f)$$
+
+- If bond is trading ex-interest then the accrued interest between SD and NCD needs to be added back
+
+$$P_{adj} = P_0 + C(f)$$
+
+- Note that the settlement and quoted price are equal on a coupon payment date
+
+
+## Cleaning the dirty price
+
+- Cum-interest
+  - 5.75% October 2025 AGS that settles on 21 September 2025 and has a discount rate of 5.10%
+
+$$
+\begin{align}
+P_{adj} &= P_0 - C(1-f) \\
+        &= 1036.674 - 28.75 \left(\frac{153}{183} \right) \\
+        &= 1012.616
+\end{align}
+$$
+
+- Ex-interest
+  - 5.75% October 2025 AGS that settles on 16 October 2025 and has a discount rate of 5.10%
+
+$$
+\begin{align}
+P_{adj} &= P_0 + C(f) \\
+        &= 1011.516 + 28.75 \left( \frac{5}{183} \right) \\
+        &= 1012.301
+\end{align}
+$$
+
+
+## Cleaning the dirty price
+
+```{r}
+
+dirtyprices %>%
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = dirty), linewidth = 0.7, colour = 'brown') +
+  geom_line(aes(y = clean), linewidth = 0.7, colour = 'gold') + 
+  labs(x = "Date", y = "Price ($)") +
+  theme(axis.title.x = element_text(size=12),
+        axis.title.y = element_text(size=12),
+        axis.text = element_text(size=12),
+        axis.text.x = element_text(angle = 45, vjust= 1, hjust = 1), 
+        panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.5),
+        panel.grid.major.y = element_line(colour = "grey", linewidth = 0.5, linetype = "dotted"),
+        text = element_text(family ="sans")) +
+  scale_y_continuous(limits = c(1000, 1040), 
+                     breaks = seq(1000, 1040, 5),
+                     expand = expansion(mult = 0)) +
+  scale_x_date(expand = expansion(mult = 0), 
+               date_breaks = "7 day",
+               date_labels = "%d-%b-%y")
+
+```
+
+
+## Pricing a zero coupon bond
+
+- Do not make any periodic coupon payments
+- Issued at a discount to face value
+- “Interest” is paid at maturity
+- The value of interest is the difference between the face value and the purchase price
+- Price is simply the present value of the face value
+
+$$P_0 = \frac{F}{(1+y)^N}$$
+
+- The yield and time to maturity can be annual or semi-annual depending on the compounding used 
+
+$$P_0 = \frac{F}{(1+\frac{y}{2})^{2N}}$$
+
+## Reasons for bond price changes
+
+- The price of a bond can change for three reasons:
+1. There is a change in the required yield owing to changes in the **credit quality** of the issuer
+1. There is a change in the required yield owing to a change in the yield on comparable bonds (i.e. a change in the **yield required by the market**)
+1. There is a change in the price of the bond selling at a premium or a discount, without any change in the required yield, simply because the bond is **moving toward maturity**
+
+
+## How do bond prices change over time?
+
+- Assume yields remain unchanged over time
+- For a bond selling at par value, the coupon rate equals the required yield
+  - As the bond moves closer to maturity, the bond continues to sell at par 
+  - The bond price will remain constant as the bond moves toward the maturity date
+  - The investor will not make a capital gain or a capital loss if held to maturity
+- The price of a bond will not remain constant for a bond selling at a premium or a discount 
+- Premium bonds have C > YTM and price > face value
+  - A premium bond decreases in price as it approaches maturity if the required yield does not change
+  - Investors make a capital loss if held to maturity
+- Discount bonds have C < YTM and price < face value
+  - A discount bond increases in price as it approaches maturity if the required yield does not change
+  - Investors make a capital gain if held to maturity
+- The price will equal par value at the maturity date for all bonds
+
+
+## How do bond prices change over time?
+
+```{ojs}
+//| panel: sidebar
+
+viewof Coupon_pick1 = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Coupon (%)"}
+)
+
+viewof Yield_pick1 = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Yield (%)"}
+)
+
+```
+
+```{ojs}
+
+filtered_dur1 = transpose(bond_prices_223_ojs).filter(function(dur1) {
+  return Coupon_pick1 == dur1.Coupon & Yield_pick1 == dur1.YTM;
+})
+
+Plot.plot({
+  x: { reverse: true, label: "Years To Maturity", line: true, grid: true, ticks: 15, domain: [0, 30]},
+  y: { label: "Price", zero:true, line: true, grid: true, domain: [0, 4000]},
+  marks: [Plot.line(filtered_dur1, { x: "Years", y: "Price", stroke: "red"})],
+    style: {
+      color: "#0b1554",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      overflow: "visible"
+    },
+    height:500, width: 900, margin: 60
+  })
+
+```
+
+## Fixed income returns
+
+- Yield to maturity (YTM or $y$) is the internal rate of return (IRR) of bond cash flows
+  - YTM is the interest rate that makes the present value of a bond’s cash flows equal to its price
+- YTM is the rate of return earned by an investor if 
+  1. The bond is held to maturity and 
+  2. Coupon payments are invested, and reinvested, at the YTM
+- It takes account of the timing of coupon income and the capital gain/loss if bond is held until maturity
+- For a semi-annual coupon paying bond, doubling the periodic discount rate gives the yield to maturity
+
+
+## Fixed income returns
+
+- Returns from holding a bond can be generated from
+  1. Periodic coupon payments
+  2. Capital gain or loss
+  3. Reinvestment of coupon payments
+- Recall that the calculation of YTM assumes that coupons are reinvested at the YTM
+- In reality, investors face reinvestment risk and may not be able to reinvest at a rate equal to YTM
+
+
+## Fixed income returns
+
+- We can adjust our pricing formula for changes in the reinvestment rate
+- The value of the coupons and the reinvestment return ($CRI$) is given by
+
+$$CRI = \frac{C}{y_r}\left[(1+y_r)^H - 1\right]$$
+
+- $H$ is the number of holding periods and $y_r$ is the coupon reinvestment rate
+- We can decompose this into total coupon payments ($H \times C$) and reinvestment income ($RI$)
+
+$$RI = \frac{C}{y_r}\left[(1+y_r)^H - 1\right] - H \times C$$
+
+- We can now use a different reinvestment rate ($y_r$) to determine the total return of holding the bond
+
+
+## Fixed income returns
+
+- The per annum holding period return can be determined based on the purchase price ($P_0$), the selling price ($P_t$),  the coupon and reinvestment income ($CRI$) and the compounding frequency ($m$)
+  - The compounding frequency usually aligns with the frequency of coupon payments
+
+$$
+\begin{align}
+P_0 \left(1+\frac{HPR}{m} \right)^H &= CRI + P_t \\
+\left(1+\frac{HPR}{m} \right)^H &=\frac{CRI + P_t}{P_0} \\
+1+\frac{HPR}{m} &=\left(\frac{CRI + P_t}{P_0} \right)^{\frac{1}{H}} \\
+HPR &= m\left[\left(\frac{CRI + P_t}{P_0} \right)^{\frac{1}{H}} - 1 \right]\\
+\end{align}
+$$
+
+
+## Conclusion
+
+- This lecture covered the technical details of how bonds are priced
+- Bond prices and yields are inversely related
+- Bonds accrue interest every day creating a difference between the clean and dirty price
+- Bond prices change mechanically as they approach maturity
+- Holding period returns need to take into coupons, reinvestment income and capital gains/losses
