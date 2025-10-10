@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="FIN223_Lecture10_files/libs/clipboard/clipboard.min.js"></script>
+<script src="FIN223_Lecture10_files/libs/quarto-html/tabby.min.js"></script>
+<script src="FIN223_Lecture10_files/libs/quarto-html/popper.min.js"></script>
+<script src="FIN223_Lecture10_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="FIN223_Lecture10_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="FIN223_Lecture10_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="FIN223_Lecture10_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.31">
+
+  <meta name="author" content="Andrew Ainsworth">
+  <title>Term Structure of Interest Rates</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="FIN223_Lecture10_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="FIN223_Lecture10_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="FIN223_Lecture10_files/libs/revealjs/dist/theme/quarto-b14b3fd0f7e943614104be57d64eb2fe.css">
+  <link href="FIN223_Lecture10_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="FIN223_Lecture10_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="FIN223_Lecture10_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="FIN223_Lecture10_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="FIN223_Lecture10_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="FIN223_Lecture10_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Term Structure of Interest Rates</h1>
+  <p class="subtitle">FIN 223 Lecture 10</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Andrew Ainsworth 
+</div>
+        <p class="quarto-title-affiliation">
+            University of Wollongong
+          </p>
+    </div>
+</div>
+
+</section>
+<section id="lecture-outline" class="slide level2">
+<h2>Lecture outline</h2>
+<ul>
+<li>What is the yield curve and why is it useful?
+<ul>
+<li>It is a barometer of the economy and future interest rates</li>
+</ul></li>
+<li>Term structure of interest rates
+<ul>
+<li>What is it?</li>
+<li>How do we estimate it?</li>
+</ul></li>
+<li>How do we really price bonds?
+<ul>
+<li>We will see that each cash flow has its own discount rate</li>
+</ul></li>
+<li>Theories of the term structure
+<ul>
+<li>How can we predict future interest rates?</li>
+</ul></li>
+</ul>
+<p><br>
+</p>
+<ul>
+<li>Reading: BKM Ch 10.6 (pp.&nbsp;312-318)</li>
+</ul>
+</section>
+<section id="what-is-the-yield-curve" class="slide level2">
+<h2>What is the yield curve?</h2>
+<ul>
+<li>Describes the relationship between yield and time to maturity at a given point in time across different fixed income securities</li>
+<li>Incorporates the views of market participants reflected in bond prices, and therefore, yields</li>
+<li>Different yield curve for different segments of the market (e.g.&nbsp;Treasury, AAA-rated corporate)</li>
+<li>The yield curve can provide an indication of the cost of debt for different maturities and issuers</li>
+</ul>
+</section>
+<section id="the-yield-curve" class="slide level2">
+<h2>The yield curve</h2>
+<ul>
+<li>The yield curve can many different shapes</li>
+<li>Upward-sloping yield curve
+<ul>
+<li>Indicates yields tend to increase with longer maturities</li>
+</ul></li>
+<li>Inverted yield curve
+<ul>
+<li>Occurs when short-term rates are higher than long term rates</li>
+</ul></li>
+<li>Flat yield curve
+<ul>
+<li>Rates for short- and long-term debt are essentially the same</li>
+</ul></li>
+<li>Humped
+<ul>
+<li>Intermediate rates are the highest</li>
+</ul></li>
+</ul>
+</section>
+<section id="australian-government-bond-yields" class="slide level2">
+<h2>Australian government bond yields</h2>
+
+<img data-src="yields.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="australian-government-yield-curves" class="slide level2">
+<h2>Australian government yield curves</h2>
+
+<img data-src="yield_curves.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="term-spread-10-year-2-year-yields" class="slide level2">
+<h2>Term spread: 10-year – 2-year yields</h2>
+
+<img data-src="Term_Spread.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="ytm-and-bond-pricing" class="slide level2">
+<h2>YTM and bond pricing</h2>
+<ul>
+<li>To date, we have used the YTM to price a bond’s cash flows</li>
+</ul>
+<p><span class="math display">\[P = \frac{C}{(1+y)} + \frac{C}{(1+y)^2} + \frac{C}{(1+y)^3} + ... + \frac{F + C}{(1+y)^N}\]</span></p>
+<ul>
+<li>But, investors do not price a bond using the same discount rate (<span class="math inline">\(y\)</span>) for each cash flow</li>
+<li>Each cash flow will have its own discount rate that is dependent on the time taken for the investor to receive the cash flow</li>
+<li>Consider a 2-year bond paying semi-annual coupons at 8% p.a. yielding 6% p.a.</li>
+<li>This bond will have a price of $1037.17</li>
+</ul>
+</section>
+<section id="ytm-and-bond-pricing-1" class="slide level2">
+<h2>YTM and bond pricing</h2>
+<ul>
+<li>Pricing the bond using YTM</li>
+</ul>
+<p><span class="math display">\[P = \frac{40}{(1.03)} + \frac{40}{(1.03)^2} + \frac{40}{(1.03)^3} + \frac{1040}{(1.03)^4}\]</span></p>
+<ul>
+<li>Pricing the bond using individual discount rates</li>
+</ul>
+<p><span class="math display">\[P = \frac{40}{(1.0174)} + \frac{40}{(1.0199)^2} + \frac{40}{(1.0248)^3} + \frac{1040}{(1.0305)^4}\]</span></p>
+<ul>
+<li>Both methods obtain a price of $1037.17</li>
+<li>A coupon paying bond is equivalent to a package of zero coupon bonds</li>
+<li>Using the latter approach requires an understanding of the term structure of interest rates</li>
+</ul>
+</section>
+<section id="term-structure-of-interest-rates" class="slide level2">
+<h2>Term structure of interest rates</h2>
+<ul>
+<li>The term structure of interest rates refers to the relationship between YTM and maturity of default-free zero coupon bonds (pure discount bond)</li>
+<li>Spot rate of interest
+<ul>
+<li>YTM of pure discount bond</li>
+</ul></li>
+<li>Spot curve
+<ul>
+<li>Relationship between spot rate and maturity</li>
+</ul></li>
+<li>Zero coupon securities: U.S. T-bills or strips of U.S. Treasury securities</li>
+<li>We will use a face value of $1 for convenience</li>
+<li><span class="math inline">\(z_j\)</span> is the current price of a pure discount bond with a $1 face value</li>
+<li><span class="math inline">\(y_j\)</span> is the spot rate of interest on a zero coupon bond with <span class="math inline">\(j\)</span> periods to maturity</li>
+</ul>
+<p><span class="math display">\[z_j = \frac{1}{(1+y_j)^j}\]</span></p>
+</section>
+<section id="term-structure-of-interest-rates-1" class="slide level2">
+<h2>Term structure of interest rates</h2>
+<ul>
+<li>If <span class="math inline">\(j\)</span> is in years then <span class="math inline">\(z_3\)</span> is the price of a three-year zero coupon bond</li>
+<li>The spot rate is found by re-arranging</li>
+</ul>
+<p><span class="math display">\[y_j = (z_j)^{-\frac{1}{j}}\]</span></p>
+<ul>
+<li>Note: if using semi-annual compounding then the zero coupon bond price is</li>
+</ul>
+<p><span class="math display">\[z_j = \frac{1}{(1 + \frac{y_j}{2})^{2j}}\]</span></p>
+</section>
+<section id="bootstrapping-the-spot-curve" class="slide level2">
+<h2>Bootstrapping the spot curve</h2>
+<ul>
+<li>We can derive a spot curve to overcome the problem of limited zero coupon bonds being traded in the market</li>
+<li>To do this, we need to use a bootstrapping procedure to extract the spot rates for different maturities</li>
+<li>Consider the following three coupon paying bonds and their cash flows in each of the three years</li>
+</ul>
+<p><br>
+</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="bpid" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#bpid table {
+  font-family: Montserrat, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bpid thead, #bpid tbody, #bpid tfoot, #bpid tr, #bpid td, #bpid th {
+  border-style: none;
+}
+
+#bpid p {
+  margin: 0;
+  padding: 0;
+}
+
+#bpid .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #0B1554;
+  font-size: 30px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bpid .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bpid .gt_title {
+  color: #0B1554;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bpid .gt_subtitle {
+  color: #0B1554;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bpid .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_col_heading {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bpid .gt_column_spanner_outer {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bpid .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bpid .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bpid .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bpid .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bpid .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bpid .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bpid .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bpid .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bpid .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bpid .gt_stub {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_stub_row_group {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bpid .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bpid .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bpid .gt_summary_row {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bpid .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bpid .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_grand_summary_row {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bpid .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bpid .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_footnotes {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_sourcenotes {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_left {
+  text-align: left;
+}
+
+#bpid .gt_center {
+  text-align: center;
+}
+
+#bpid .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bpid .gt_font_normal {
+  font-weight: normal;
+}
+
+#bpid .gt_font_bold {
+  font-weight: bold;
+}
+
+#bpid .gt_font_italic {
+  font-style: italic;
+}
+
+#bpid .gt_super {
+  font-size: 65%;
+}
+
+#bpid .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bpid .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bpid .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bpid .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bpid .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bpid .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bpid .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#bpid .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#bpid div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table" style="table-layout:fixed;width:0px;" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <colgroup>
+    <col style="width:150px;">
+    <col style="width:150px;">
+    <col style="width:150px;">
+    <col style="width:150px;">
+    <col style="width:150px;">
+  </colgroup>
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="bond"><span data-qmd-base64="KipCb25kKio="><span class="gt_from_md"><strong>Bond</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="price"><span data-qmd-base64="KipQcmljZSoq"><span class="gt_from_md"><strong>Price</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="year1"><span data-qmd-base64="KipZZWFyIDEqKg=="><span class="gt_from_md"><strong>Year 1</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="year2"><span data-qmd-base64="KipZZWFyIDIqKg=="><span class="gt_from_md"><strong>Year 2</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="year3"><span data-qmd-base64="KipZZWFyIDMqKg=="><span class="gt_from_md"><strong>Year 3</strong></span></span></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="bond" class="gt_row gt_center">1</td>
+<td headers="price" class="gt_row gt_right">997</td>
+<td headers="year1" class="gt_row gt_right">1040</td>
+<td headers="year2" class="gt_row gt_right"></td>
+<td headers="year3" class="gt_row gt_right"></td></tr>
+    <tr><td headers="bond" class="gt_row gt_center">2</td>
+<td headers="price" class="gt_row gt_right">1005</td>
+<td headers="year1" class="gt_row gt_right">50</td>
+<td headers="year2" class="gt_row gt_right">1050</td>
+<td headers="year3" class="gt_row gt_right"></td></tr>
+    <tr><td headers="bond" class="gt_row gt_center" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">3</td>
+<td headers="price" class="gt_row gt_right" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">984</td>
+<td headers="year1" class="gt_row gt_right" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">60</td>
+<td headers="year2" class="gt_row gt_right" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">60</td>
+<td headers="year3" class="gt_row gt_right" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">1060</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="bootstrapping-the-spot-curve-1" class="slide level2">
+<h2>Bootstrapping the spot curve</h2>
+<ul>
+<li>We first use the price of the one-year coupon paying bond to ‘back out’ the one-year spot rate</li>
+</ul>
+<p><span class="math display">\[
+\begin{align}
+P_1 &amp;= \frac{1000+C_1}{(1+y_1)^1} \\
+997 &amp;= \frac{1040}{(1+y_1)} \\
+y_1 &amp;= \frac{1040}{997} - 1 = 4.31 \% \\
+\end{align}
+\]</span></p>
+<ul>
+<li>The implied one-year zero coupon bond price is</li>
+</ul>
+<p><span class="math display">\[
+\begin{align}
+z_j &amp;= \frac{1}{(1+y_j)^j} \\
+z_1 &amp;= \frac{1}{1.0431} = 0.9587
+\end{align}
+\]</span></p>
+</section>
+<section id="bootstrapping-the-spot-curve-2" class="slide level2">
+<h2>Bootstrapping the spot curve</h2>
+<ul>
+<li>We can substitute the spot rate into the calculation of the 2-year bond price</li>
+</ul>
+<p><span class="math display">\[
+\begin{align}
+P_2 &amp;= \frac{C_1}{(1+y_1)} + \frac{1000+C_2}{(1+y_2)^2} \\
+1005 &amp;= \frac{50}{1.0431} + \frac{1050}{(1+y_2)^2} \\
+y_2 &amp;= 4.74\% \\
+\therefore z_2 &amp;= \frac{1}{1.0474^2} = 0.9115
+\end{align}
+\]</span></p>
+<p><br>
+</p>
+<ul>
+<li>We can continue with the same procedure to find the 3-year spot rate and zero coupon bond price</li>
+<li><span class="math inline">\(y_3\)</span> = 6.73 % and <span class="math inline">\(z_3\)</span> = 0.8224</li>
+</ul>
+</section>
+<section id="bootstrapping-the-spot-curve-3" class="slide level2">
+<h2>Bootstrapping the spot curve</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="bpid" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#bpid table {
+  font-family: Montserrat, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bpid thead, #bpid tbody, #bpid tfoot, #bpid tr, #bpid td, #bpid th {
+  border-style: none;
+}
+
+#bpid p {
+  margin: 0;
+  padding: 0;
+}
+
+#bpid .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #0B1554;
+  font-size: 30px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bpid .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bpid .gt_title {
+  color: #0B1554;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bpid .gt_subtitle {
+  color: #0B1554;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bpid .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_col_heading {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bpid .gt_column_spanner_outer {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bpid .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bpid .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bpid .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bpid .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bpid .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bpid .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bpid .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bpid .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bpid .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bpid .gt_stub {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_stub_row_group {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bpid .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bpid .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bpid .gt_summary_row {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bpid .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bpid .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_grand_summary_row {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bpid .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bpid .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_footnotes {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_sourcenotes {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_left {
+  text-align: left;
+}
+
+#bpid .gt_center {
+  text-align: center;
+}
+
+#bpid .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bpid .gt_font_normal {
+  font-weight: normal;
+}
+
+#bpid .gt_font_bold {
+  font-weight: bold;
+}
+
+#bpid .gt_font_italic {
+  font-style: italic;
+}
+
+#bpid .gt_super {
+  font-size: 65%;
+}
+
+#bpid .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bpid .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bpid .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bpid .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bpid .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bpid .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bpid .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#bpid .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#bpid div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table" style="table-layout:fixed;width:0px;" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <colgroup>
+    <col style="width:150px;">
+    <col style="width:350px;">
+    <col style="width:350px;">
+  </colgroup>
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="maturity"><span data-qmd-base64="KipNYXR1cml0eSoq"><span class="gt_from_md"><strong>Maturity</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="zeroprice"><span data-qmd-base64="KipJbXBsaWVkIFplcm8gUHJpY2UqKg=="><span class="gt_from_md"><strong>Implied Zero Price</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="spotrate"><span data-qmd-base64="KipTcG90IFJhdGUgb2YgSW50ZXJlc3QqKg=="><span class="gt_from_md"><strong>Spot Rate of Interest</strong></span></span></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="maturity" class="gt_row gt_center">1</td>
+<td headers="zeroprice" class="gt_row gt_center">0.9587</td>
+<td headers="spotrate" class="gt_row gt_center">4.31%</td></tr>
+    <tr><td headers="maturity" class="gt_row gt_center">2</td>
+<td headers="zeroprice" class="gt_row gt_center">0.9115</td>
+<td headers="spotrate" class="gt_row gt_center">4.74%</td></tr>
+    <tr><td headers="maturity" class="gt_row gt_center" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">3</td>
+<td headers="zeroprice" class="gt_row gt_center" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">0.8224</td>
+<td headers="spotrate" class="gt_row gt_center" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">6.73%</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<ul>
+<li>Let’s price the 3-year bond using the spot rates</li>
+</ul>
+<p><span class="math display">\[P_3 = \frac{60}{(1.0431)} + \frac{60}{(1.0474)^2}
++ \frac{1060}{(1.0673)^3} = 984\]</span></p>
+<ul>
+<li>Or we can use the implied zero coupon bond prices (they are discount factors)</li>
+</ul>
+<p><span class="math display">\[
+\begin{align}
+P_3 &amp;= 60 \times z_1 + 60 \times z_2 + 1060 \times z_3 \\
+    &amp;= 60 \times 0.9587 + 60 \times 0.9115 +
+    1060 \times 0.8224 \\
+    &amp;= 984
+\end{align}
+\]</span></p>
+</section>
+<section id="forward-rates-of-interest" class="slide level2">
+<h2>Forward rates of interest</h2>
+<ul>
+<li>Given a set of pure discount bond prices (<span class="math inline">\(z_j\)</span>), we can calculate a set of forward rates defined on date <span class="math inline">\(t\)</span> as <span class="math inline">\(f_t(j,k)\)</span></li>
+<li>The forward rate can be locked in on date <span class="math inline">\(t\)</span> for a loan starting on date <span class="math inline">\(j &gt; t\)</span> and maturing on date <span class="math inline">\(k &gt; j\)</span></li>
+<li>This will remove investment uncertainty and risk</li>
+</ul>
+
+<img data-src="Fwd_rate.png" class="r-stretch"></section>
+<section id="forward-rates-of-interest-1" class="slide level2">
+<h2>Forward rates of interest</h2>
+<ul>
+<li>To preclude arbitrage, we need the following relationship between the forward rate, the j-period spot rate and the k-period spot rate</li>
+</ul>
+<p><span class="math display">\[(1+y_j)^j \times (1+f_t(j,k))^{k-j} = (1+y_k)^k\]</span></p>
+<ul>
+<li>The forward rate is therefore</li>
+</ul>
+<p><span class="math display">\[f_t(j,k) = \left[ \frac{(1+y_k)^k}{(1+y_j)^j} \right]^\frac{1}{k-j} - 1\]</span></p>
+<ul>
+<li>The forward rate at year 0 between year 1 and 2 is</li>
+</ul>
+<p><span class="math display">\[f_0(1,2) = \left[ \frac{(1+y_2)^2}{(1+y_1)^1} \right]^\frac{1}{2-1} - 1\]</span></p>
+</section>
+<section id="forward-rates-of-interest-2" class="slide level2">
+<h2>Forward rates of interest</h2>
+<ul>
+<li>Let’s calculate the forward rates from our previous example</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div id="bpid" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#bpid table {
+  font-family: Montserrat, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bpid thead, #bpid tbody, #bpid tfoot, #bpid tr, #bpid td, #bpid th {
+  border-style: none;
+}
+
+#bpid p {
+  margin: 0;
+  padding: 0;
+}
+
+#bpid .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #0B1554;
+  font-size: 30px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bpid .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bpid .gt_title {
+  color: #0B1554;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bpid .gt_subtitle {
+  color: #0B1554;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bpid .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_col_heading {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bpid .gt_column_spanner_outer {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bpid .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bpid .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bpid .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bpid .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bpid .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bpid .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bpid .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bpid .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bpid .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bpid .gt_stub {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_stub_row_group {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bpid .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bpid .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bpid .gt_summary_row {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bpid .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bpid .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_grand_summary_row {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bpid .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bpid .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bpid .gt_footnotes {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_sourcenotes {
+  color: #0B1554;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bpid .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bpid .gt_left {
+  text-align: left;
+}
+
+#bpid .gt_center {
+  text-align: center;
+}
+
+#bpid .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bpid .gt_font_normal {
+  font-weight: normal;
+}
+
+#bpid .gt_font_bold {
+  font-weight: bold;
+}
+
+#bpid .gt_font_italic {
+  font-style: italic;
+}
+
+#bpid .gt_super {
+  font-size: 65%;
+}
+
+#bpid .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bpid .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bpid .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bpid .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bpid .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bpid .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bpid .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#bpid .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#bpid div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table" style="table-layout:fixed;width:0px;" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <colgroup>
+    <col style="width:150px;">
+    <col style="width:350px;">
+    <col style="width:350px;">
+  </colgroup>
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="maturity"><span data-qmd-base64="KipNYXR1cml0eSoq"><span class="gt_from_md"><strong>Maturity</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="zeroprice"><span data-qmd-base64="KipJbXBsaWVkIFplcm8gUHJpY2UqKg=="><span class="gt_from_md"><strong>Implied Zero Price</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="border-top-width: 2px; border-top-style: solid; border-top-color: #0b1554; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;" scope="col" id="spotrate"><span data-qmd-base64="KipTcG90IFJhdGUgb2YgSW50ZXJlc3QqKg=="><span class="gt_from_md"><strong>Spot Rate of Interest</strong></span></span></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="maturity" class="gt_row gt_center">1</td>
+<td headers="zeroprice" class="gt_row gt_center">0.9587</td>
+<td headers="spotrate" class="gt_row gt_center">4.31%</td></tr>
+    <tr><td headers="maturity" class="gt_row gt_center">2</td>
+<td headers="zeroprice" class="gt_row gt_center">0.9115</td>
+<td headers="spotrate" class="gt_row gt_center">4.74%</td></tr>
+    <tr><td headers="maturity" class="gt_row gt_center" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">3</td>
+<td headers="zeroprice" class="gt_row gt_center" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">0.8224</td>
+<td headers="spotrate" class="gt_row gt_center" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #0b1554;">6.73%</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p><br>
+</p>
+
+<img data-src="Fwd_rate2.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="forward-rates-of-interest-3" class="slide level2">
+<h2>Forward rates of interest</h2>
+<ul>
+<li>Let’s calculate the forward rates</li>
+</ul>
+<p><span class="math display">\[
+\begin{align}
+f_t(j,k) &amp;= \left[ \frac{(1+y_k)^k}{(1+y_j)^j} \right]^\frac{1}{k-j} - 1 \\
+f_0(1,2) &amp;= \left[ \frac{(1.0474)^2}{(1.0431)} \right] - 1
+  = 5.17 \% \\
+f_0(2,3) &amp;= \left[ \frac{(1.0673)^3}{(1.0474)^2} \right] - 1
+  = 10.83 \% \\
+f_0(1,3) &amp;= \left[ \frac{(1.0673)^3}{(1.0431)} \right]^\frac{1}{(3-1)} - 1
+  = 7.96 \%
+\end{align}
+\]</span></p>
+<ul>
+<li>Note: we can also use the zero coupon prices to achieve the same results</li>
+</ul>
+</section>
+<section id="theories-of-the-term-structure" class="slide level2">
+<h2>Theories of the term structure</h2>
+<ul>
+<li>There exist numerous theories to explain the shape of the term structure</li>
+<li>We will review three of the theories</li>
+</ul>
+<ol type="1">
+<li>Expectations theory</li>
+<li>Liquidity premium theory</li>
+<li>Market segmentation theory</li>
+</ol>
+</section>
+<section id="expectations-theory" class="slide level2">
+<h2>Expectations theory</h2>
+<ul>
+<li>Expectations theory asserts that forward rates are market expectations of future interest rates</li>
+</ul>
+<p><span class="math display">\[f_t(j,k) = E_t[y(j,k)]\]</span></p>
+<ul>
+<li>Unbiased expectations means that there forecast errors (<span class="math inline">\(\varepsilon\)</span>) have an average of zero</li>
+</ul>
+<p><span class="math display">\[E_0[y(j,k)] = y(j,k) + \varepsilon\]</span></p>
+<ul>
+<li>If yield curve is upward sloping then interest rates are expected to rise in the future</li>
+<li>Implication of expectations theory is that bonds with different times to maturity are perfect substitutes</li>
+<li>It assumes investors will receive the same holding period return irrespective of bond choice</li>
+<li>Assumes risk neutrality of market participants and does not consider reinvestment risk</li>
+</ul>
+</section>
+<section id="liquidity-premium-theory" class="slide level2">
+<h2>Liquidity premium theory</h2>
+<ul>
+<li>Corporations and governments prefer issuing long-term securities</li>
+<li>Investors prefer buying shorter term securities</li>
+<li>To entice investors to purchase bonds with maturities longer than their holding periods, bond issuers offer a liquidity premium</li>
+<li>The forward rate comprises the expected future interest rate and liquidity premium (<span class="math inline">\(LP\)</span>)</li>
+</ul>
+<p><span class="math display">\[f_t(j,k) = E_t[y(j,k)] + E_t[LP(j,k)]\]</span></p>
+<ul>
+<li>The liquidity premium is related to the risk of uncertain selling prices when investors purchase bonds with maturities beyond their intended holding period</li>
+<li>Larger premium for longer maturity bonds</li>
+</ul>
+</section>
+<section id="market-segmentation-theory" class="slide level2">
+<h2>Market segmentation theory</h2>
+<ul>
+<li>Market segmentation theory asserts that the market for debt is segmented on the basis of the maturity preferences of different financial institutions and investors</li>
+<li>The yield curve changes as the supply and demand for funds within each maturity segment determines its prevailing interest rate</li>
+<li>If supply is greater than demand for short-term loans, short-term rates will be relatively low</li>
+<li>If at the same time, demand for long-term loans is higher than the available supply of funds, then long-term rates will move up</li>
+<li>In this situation, the yield curve will slope upward</li>
+</ul>
+</section>
+<section id="conclusion" class="slide level2">
+<h2>Conclusion</h2>
+<ul>
+<li>The yield curve plots yields versus time to maturity</li>
+<li>Term structure of interest rates
+<ul>
+<li>We can bootstrap spot rates to price bonds</li>
+<li>Spot rates are interest rates on zero coupon bonds</li>
+<li>We can extract forward rates</li>
+<li>The principle of no arbitrage allows us to do this</li>
+</ul></li>
+<li>Theories of the term structure
+<ul>
+<li>Forward rates can potentially be used to estimated future spot rates</li>
+<li>Different theories of the term structure can assist in extracting future spot rates from the term structure</li>
+</ul></li>
+</ul>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="FIN223_Lecture10_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":false,"theme":"whiteboard","boardmarkerWidth":2,"transition":1},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
