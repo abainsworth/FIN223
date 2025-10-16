@@ -1,0 +1,699 @@
+---
+title: "Interest Rate Risk"
+subtitle: "FIN 223 Lecture 11"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    html-table-processing: none
+    chalkboard: 
+      buttons: false
+      theme: whiteboard
+      boardmarker-width: 2
+      transition: 1
+      #src: FIN223_chalkboard_L4.json
+execute: 
+  eval: true
+  echo: false
+---
+
+## Lecture outline
+
+- What are the risks of investing in bonds?
+- What is interest rate risk?
+- How do we measure interest rate risk?
+  - We can approximate price changes by using duration
+- What factors drive the level of interest rate risk?
+  - Coupon, YTM and time to maturity
+- How can we hedge and manage interest rate risk?
+  - We can offset the duration of our liabilities with the duration of our assets
+- What are the limitations of duration?
+
+\
+
+- Reading: BKM 11.1 – 11.3 (pp. 328 – 347)
+
+
+## Risks of investing in bonds
+
+- Interest rate risk 
+  - Inverse relationship between prices and interest rates
+  - If interest rates increase then bond prices decrease so investors make a capital loss
+  - Problem if investor has to sell bond prior to maturity
+  - Reinvestment of coupons also affected
+  - Most important source of risk
+- Credit risk
+  - Risk that issuer may not be able make contractual payments to bondholders
+  - Treasury securities do not carry credit risk
+  - Credit ratings agencies assess credit risk and rate bonds (e.g. AAA, BB+, C, etc)
+
+
+## Risks of investing in bonds
+
+- Liquidity risk
+  - The ability to trade large size quickly, at low cost, when you want to trade 
+  - You might not be able to sell the bond when you need to
+- Call risk
+  - Issuers may be able to “call” a bond
+  - If interest rates decline then an issuer is more likely to call a bond as they can refinance at a cheaper rate
+  - Callable bonds should have a lower price, and higher yield than similar instruments without a call feature
+- Inflation risk
+  - Inflation affects the real purchasing power of coupon payments
+  - Fixed coupon securities incorporate compensation for expected inflation at issuance
+  - Can invest in inflation indexed bonds or floating rate bonds
+  
+  
+## Bond price volatility
+
+- Bond price volatility refers to the fluctuation of bond prices
+- In the context of volatility, fixed income markets focus on the relationship between price and yield
+- The primary focus is on how a change in the yield of a bond affects its price
+- Factors such as coupon rate, term to maturity and the pre-existing yield impact on how volatile a bond price is to a change in the yield
+
+
+## Price vs. yield
+
+```{r}
+#| output: false
+library(tidyverse)
+
+bondpricer <- function(ytm, coup, ttm) {
+  if(ytm==0) {
+    price = 1000*(coup/100)*ttm+1000}
+  else {
+    price = (1000*(coup/100))/(ytm)*(1-((1+ytm)^-ttm))+1000/((1+ytm)^ttm)}
+}
+
+yields_l3 <- tibble(Yield = seq(from = 0, to = 0.15, by = 0.005))
+coup_l3 <- tibble(Coupon = seq(from = 0, to = 10, by = 0.5))
+ttm_l3 <- tibble(Years = seq(from = 2, to = 30, by = 1))
+
+bond_prices_l3 <- crossing(yields_l3, coup_l3, ttm_l3)
+
+bondpricer_v = Vectorize(bondpricer)
+
+bond_prices_l3 <- bond_prices_l3 %>%
+  mutate(Price = bondpricer_v(Yield, Coupon, Years))
+
+bond7 <- bond_prices_l3 %>%
+  filter(Yield == 0.07) %>%
+  rename(Price7 = Price) %>%
+  select(!Yield)
+
+bond_prices_l3a <- bond_prices_l3 %>%
+  inner_join(bond7, join_by(Coupon, Years), keep=FALSE) %>%
+  mutate(pct = (Price - Price7)/Price7,
+         dollar = (Price - Price7))
+
+ojs_define(bond_prices_l3a_ojs = bond_prices_l3a)
+
+```
+
+```{ojs}
+//| panel: sidebar
+
+viewof Coupon_pick = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Coupon (%)"}
+)
+
+viewof ttm_pick = Inputs.range(
+  [2, 30], 
+  {value: 10, step: 1, label: "Time to Maturity"}
+)
+
+```
+
+```{ojs}
+
+filtered_dur = transpose(bond_prices_l3a_ojs).filter(function(dur) {
+  return Coupon_pick == dur.Coupon & ttm_pick == dur.Years;
+})
+
+Plot.plot({
+  x: { label: "Yield", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Price", zero:true, line: true, grid: true, domain: [0, 4000]},
+  marks: [Plot.line(filtered_dur, { x: "Yield", y: "Price", stroke: "red"})],
+    style: {
+      color: "#0b1554",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      overflow: "visible"
+    },
+    height:500, width: 900, margin: 60
+  })
+
+```
+
+
+## Dollar change in price vs. yield
+
+```{ojs}
+//| panel: sidebar
+
+viewof Coupon_pick1 = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Coupon (%)"}
+)
+
+viewof ttm_pick1 = Inputs.range(
+  [2, 30], 
+  {value: 10, step: 1, label: "Time to Maturity"}
+)
+
+```
+
+```{ojs}
+
+filtered_dur1 = transpose(bond_prices_l3a_ojs).filter(function(dur) {
+  return Coupon_pick1 == dur.Coupon & ttm_pick1 == dur.Years;
+})
+
+Plot.plot({
+  x: { label: "Yield", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Dollar change in price relative to YTM = 7%", zero:true, line: true, grid: true, domain: [-1000, 3000]},
+  marks: [
+    Plot.line(filtered_dur1, { x: "Yield", y: "dollar", stroke: "blue"}),
+    Plot.ruleY([0])],
+    style: {
+      color: "#0b1554",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      overflow: "visible"
+    },
+    height:500, width: 900, margin: 60
+  })
+
+```
+
+## Percentage change in price vs. yield
+
+```{ojs}
+//| panel: sidebar
+
+viewof Coupon_pick2 = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Coupon (%)"}
+)
+
+viewof ttm_pick2 = Inputs.range(
+  [2, 30], 
+  {value: 10, step: 1, label: "Time to Maturity"}
+)
+
+```
+
+```{ojs}
+
+filtered_dur2 = transpose(bond_prices_l3a_ojs).filter(function(dur) {
+  return Coupon_pick2 == dur.Coupon & ttm_pick2 == dur.Years;
+})
+
+Plot.plot({
+  x: { label: "Yield", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Percentage change in price relative to YTM = 7%", tickFormat: ".0%", zero:true, line: true, grid: true, domain: [-1, 7]},
+  marks: [
+    Plot.line(filtered_dur2, { x: "Yield", y: "pct", stroke: "orange"}),
+    Plot.ruleY([0])],
+    style: {
+      color: "#0b1554",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      overflow: "visible"
+    },
+    height:500, width: 900, margin: 60
+  })
+
+```
+
+## Properties of changes in bond prices
+
+- Let’s assume a flat term structure 
+  - All YTM are equal
+- Bond prices move in opposite direction to yield but percentage change is not the same for all bonds
+- For very small changes in yield, the percentage price change is approximately the same for increases or decreases in yield
+- For large changes in yield, this percentage price change is different
+  - The percentage price increase is greater than the percentage price decrease
+  - Capital gain is greater than capital loss, assuming we own the bond
+
+
+## Measures of risk
+
+- The term structure of interest rates implies that each cash flow is discounted at a spot rate based on the timing of each cash flow
+- Duration is based on one single rate – the yield to maturity
+- The YTM is a proxy for the term structure
+  - It is the term structure if, and only if, the term structure is flat
+- For the remainder of this lecture, we assume the yield curve is flat
+  -	YTM = spot rates
+
+
+## Reinvestment and capital gains
+
+- Duration is a measure of interest rate risk
+  - Measures bond price volatility
+- It takes into account reinvestment risk and price risk
+- If yields increase then
+  - Bond prices fall
+  - Reinvestment rate increases
+- If yields decrease then
+  - Bond prices rise
+  - Reinvestment rate decreases
+- Does the price effect or the reinvestment effect dominate?
+- What is the effect on holding period return and the dollar return for investors?
+
+
+## Duration
+
+- Recall the bond pricing equation:
+
+$$P = \frac{C}{(1+y)} + \frac{C}{(1+y)^2} + \frac{C}{(1+y)^3} + ... + \frac{F + C}{(1+y)^N}$$
+
+- The first derivative of price with respect to yield determines the change in price that results from a change in yield
+- We can differentiate the bond pricing equation with respect to yield
+
+$$
+\begin{align}
+\frac{dP}{dy} &= \frac{-C}{(1+y)^2} + \frac{-2C}{(1+y)^3} + \frac{-3C}{(1+y)^4} + ... + \frac{-N(F + C)}{(1+y)^{N+1}} \\[3px]
+ &= -\frac{1}{(1+y)} \left[ \frac{C}{(1+y)} + \frac{2C}{(1+y)^2} + \frac{3C}{(1+y)^3} + ... + \frac{N(F + C)}{(1+y)^{N}} \right]
+\end{align}
+$$
+
+- The absolute value of $\frac{dP}{dy}$ is is known as the dollar duration (or $duration)
+
+
+## $Duration
+
+- A higher measure of $duration implies greater interest rate risk
+- A larger dollar change in price will result from a given change in the level of yield
+- The negative sign implies that duration is a positive number as the price-yield relationship is inverse
+
+\
+
+- Recall that we have made two assumptions
+1. The term structure is flat
+2. There are only parallel shifts in the yield curve
+
+
+## Modified duration
+
+- Modified duration (MD) scales the $duration by price to give a relative change
+
+$$\text{Modified Duration} = \frac{\$Duration}{P}$$
+
+- Modified duration is the percentage change in price for a level change in yield
+- Higher modified duration $\to$ higher risk as percentage change in bond price will be higher for a given yield change
+- For small changes in yield, we can use duration to estimate the dollar change in price ($dP$):
+
+$$\begin{align}
+dP &= -\$Duration \times dy \\
+  &= -MD \times P \times dy
+\end{align}$$
+
+
+## Macaulay duration
+
+- Another measure of duration is Macaulay Duration (D) 
+- Returning to the first derivative of the bond pricing formula, we can divide both sides by P
+
+$$\frac{dP}{dy} \frac{1}{P}  = -\frac{1}{(1+y)} \left[ \frac{C}{(1+y)} + \frac{2C}{(1+y)^2} + \frac{3C}{(1+y)^3} + ... + \frac{N(F + C)}{(1+y)^{N}} \right] \frac{1}{P}$$
+
+\
+
+- Some slight rearranging yields
+
+$$D = -\frac{dP/P}{dy/(1+y)} = \left[ \frac{C}{(1+y)} + \frac{2C}{(1+y)^2} + \frac{3C}{(1+y)^3} + ... + \frac{N(F + C)}{(1+y)^{N}} \right] \frac{1}{P}$$
+
+\
+
+- There are two ways we can interpret Macaulay duration
+
+
+## Macaulay duration
+
+- Macaulay duration can be interpreted as the percentage change in price given a percentage change in yield
+
+$$
+\begin{align}
+D &= -\frac{dP}{dy} \frac{1}{P} (1+y) \\[6px]
+  &= -\frac{dP/P}{dy} (1+y) \\[6px]
+  &= -\frac{dP/P}{dy/(1+y)} \\[6px]
+  &\approx -\frac{\% \Delta \text{ in bond price}}{\% \Delta \text{ in bond yield}}
+\end{align}
+$$
+
+
+## Macaulay duration
+
+- Macaulay duration can be interpreted as the discounted-cash-flow-weighted time to receipt of all its promised cash flows divided by the price of the security
+
+$$\begin{align}
+D &= \left[ \frac{C}{(1+y)} + \frac{2C}{(1+y)^2} + \frac{3C}{(1+y)^3} + ... + \frac{N(F + C)}{(1+y)^{N}} \right] \frac{1}{P} \\[6px]
+D &= \frac{\displaystyle\sum_{t=1}^N \frac{t C_t}{(1+y)^t}}{P} = \frac{\displaystyle \frac{N 1000}{(1+y)^N}}{P} \\[6px]
+D &= \sum_{t=1}^N w_t t 
+\end{align}$$
+
+- Where $w_t = \frac{\displaystyle\ \frac{C_t}{(1+y)^t}}{P}$ and $w_N = \frac{\displaystyle \frac{1000+C_N}{(1+y)^N}}{P}$
+
+
+## Macaulay duration
+
+- In this interpretation duration measures the average time taken for a bond to repay the original investment (i.e. purchase price), taking into account discounting
+- It is measured in units of time (years)
+- A bond with duration of 5 years has higher interest rate risk than a bond with duration of 3 years
+
+
+## Duration – intuition 
+
+1. Calculate the Macaulay duration of a 4-year bond with a 7% semi-annual coupon that is yielding 4%
+1. Set the holding period equal to duration
+1. Calculate the holding period return if the yield increases from 4% to 4.2% immediately after you have purchased the bond, assuming the yield remains at 4.2% for the remainder of the holding period
+1. Repeat the exercise if the yield decreases from 4% to 3.8%
+
+
+## Duration – intuition
+
+- The price of the bond is $1109.88
+
+$$P = \frac{35}{0.02} (1 - (1.02)^{-8}) + \frac{1000}{(1.02)^8} = 1109.88$$
+
+- Macaulay duration is 7.167 half-years as this bond has semi-annual compounding
+  - Duration is 3.584 years
+
+$$D = \frac{\frac{1 \times 35}{(1.02)^1} + \frac{2 \times 35}{(1.02)^2} + \frac{3 \times 35}{(1.02)^3} + ... +
+ \frac{8 \times 1035}{(1.02)^8}}{1109.88} = \frac{7955.04}{1109.88} = 7.167 $$
+
+- We need to set the holding period equal to 3.584 years
+
+
+## Duration – intuition
+
+- If rates increase to 4.2% p.a. immediately after we purchase the bond
+- The purchase price remains 1109.88
+- The sale price is 1017.25 based on a holding period of 7.167 half-years
+  - The bond has 0.833 half-years until maturity when we sell
+  - $P = \frac{1035}{(1.021)^{0.833}} = 1017.25$
+- We receive coupons of $35 that are reinvested at 2.1% per half-year
+  - The first coupon will be reinvested for 6.167 half years (3.584 $\times$ 2-1)
+  - The second coupon will be reinvested for 5.167 half years and so on…
+
+\
+
+```{r}
+library(gt)
+library(dplyr)
+
+cri <- data.frame(time = c("Time (half-years)", "6.167", "5.167", "4.167", "3.167", "2.167", "1.167", "0.167"),
+                  cri = c("CRI", 39.79, 38.97, 38.17, 37.38, 36.61, 35.86, 35.12))
+
+crit <- as.data.frame(t(cri))
+
+crit_gt <- gt(crit) %>%
+  tab_options(table_body.hlines.style = "none",
+              table.width = pct(100),
+              column_labels.hidden = TRUE) %>%
+  opt_table_font(font = google_font(name = "Montserrat"), size = 24, color = "#0b1554") %>%
+  tab_style(style = cell_borders(sides = c("b"), color = "#0b1554", weight = px(2)),
+            locations = cells_body(columns = everything(), rows = nrow(crit))) %>%
+  tab_style(style = cell_borders(sides = c("t"), color = "#0b1554", weight = px(2)),
+            locations = cells_body(columns = everything(), rows = 1))
+
+crit_gt
+```
+
+- The total coupon and reinvestment income (CRI) is $261.90
+
+
+## Duration – intuition
+
+- The holding period return (HPR) is 4%
+
+$$
+\begin{align}
+HPR &= m\left[\left(\frac{CRI + P_t}{P_0} \right)^{\frac{1}{H}} - 1 \right]\\
+HPR &= 2\left[\left(\frac{261.9 + 1017.25}{1109.88} \right)^{\frac{1}{3.584 \times 2}} - 1 \right] = 4\%
+\end{align}
+$$
+
+- If the yield decreases to 3.8%
+  - The selling price is 1018.91
+  - The coupon and reinvestment income equal 260.23
+  - The HPR also equals 4%
+
+
+## Duration – intuition
+
+- We can conclude that if we set the holding period equal to duration then we can eliminate interest rate risk
+- For this holding period the change in reinvestment return perfectly offsets the capital gain/loss
+- This holds for small, parallel shifts in the yield curve and only holds for one change in interest rates
+  - Yields cannot change after a coupon payment has been received
+- After interest rates change, duration changes and we will not be immunised from future interest rate changes
+
+
+## Properties of duration
+
+- Longer duration $\to$ higher price volatility
+- Let us focus on Macaulay duration (D) and modified duration (MD)
+- Maturity
+  - Longer maturity – higher duration
+  - Duration is increasing with maturity but not in direct proportion
+  - Shorter the maturity, the sooner the investor is going to recover costs of purchasing bond and shorter the bond duration
+- Coupon rate
+  - Higher coupon rate – lower duration
+  - Higher coupon, sooner investor is going to recover costs of purchasing bond and shorter the bond duration
+- Duration changes with the passage of time $\to$ it is not static
+- Macaulay duration of zero-coupon bond = time to maturity
+
+## Properties of duration
+
+- Yield to maturity
+  - Ceteris paribus, higher yield $\to$ lower duration 
+  - Weights attached to early cash flows are higher
+  - Price sensitivity decreases as YTM increases
+
+```{ojs}
+//| panel: sidebar
+
+viewof Coupon_pick4 = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Coupon (%)"}
+)
+
+viewof ttm_pick4 = Inputs.range(
+  [2, 30], 
+  {value: 10, step: 1, label: "Time to Maturity"}
+)
+
+```
+
+
+```{ojs}
+
+filtered_dur4 = transpose(bond_prices_l3a_ojs).filter(function(dur4) {
+  return Coupon_pick4 == dur4.Coupon & ttm_pick4 == dur4.Years;
+})
+
+Plot.plot({
+  x: { label: "Yield", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Price", zero:true, line: true, grid: true, domain: [0, 4000]},
+  marks: [Plot.line(filtered_dur4, { x: "Yield", y: "Price", stroke: "red"})],
+    style: {
+      color: "#0b1554",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      overflow: "visible"
+    },
+    height:500, width: 900, margin: 60
+  })
+
+```
+
+
+
+
+
+## Duration and choice of bonds
+
+- Portfolio managers wish to maximise gains and minimise losses
+- What should a portfolio manager do if interest rates are expected to decrease?
+  - Move funds from bonds with short duration to bonds with large duration
+  - Bond prices will increase and large duration bonds will increase more in value
+- And if interest rates are expected to increase?
+  - Shift funds into short duration bonds, or…
+  - Move money into cash
+  - Cash has a duration of zero
+- Duration of a portfolio is simply a weighted average of the duration of the securities that make up the portfolio:
+
+$$D_p = \sum_{i=1}^j w_i D_i$$
+
+- The weights ($w_i$) are based on the market value of the securities, so you need to use settlement prices (not quoted prices)
+
+
+## Immunisation of portfolio risk
+
+- A manager has a liability of $10m to be paid in 4 years
+- They want to hedge this liability by purchasing bonds
+- There are no 4-year zero coupon bonds
+- There is a 2-year 8% bond and a 10-year 6% bond paying coupons semi-annually
+- The yield curve is flat at 7%
+- Q: Find the number of 2-year bonds ($n_2$) and the number of 10-year bonds ($n_{10}$) needed to hedge the liability, assuming the bonds have a face value of $1000
+
+
+## Immunisation of portfolio risk
+
+- We want $\Delta P(liability)$ = $\Delta P(asset)$
+
+$$
+\begin{align}
+D &= -\frac{dP/P}{dy/(1+y)} \\
+\frac{dP}{dy} &= - \frac{D \times P}{(1+y)}
+\end{align}
+$$
+
+- We can use a Taylor series expansion to get a first order approximation
+
+$$\Delta P = \frac{dP}{dy} \Delta y =  \frac{-D \times P}{(1+y)} \Delta y$$
+
+- If we want $\Delta P(liability)$ = $\Delta P(asset)$, then the price of the asset (bond portfolio) should equal the price of the liability and the duration of the portfolio should equal the duration of the liability
+
+
+## Immunisation of portfolio risk
+
+- D(liability) = 4 years
+- Price(liability) = $\frac{10,000,000}{(1.035)^8} = 7,594,116$
+- $D_2$ = 1.889, $P_2$ = 1018.36
+- $D_{10}$ = 7.559, $P_{10}$ = 928.93
+- We need to satisfy
+
+$$\begin{align}
+n_2 P_2 + n_{10} P_{10} &= V_L = 7,594,116 \\
+w_2 D_2 + w_{10} D_{10} &= D_L = 4
+\end{align}$$
+
+- Where $w_i = \frac{n_i P_i}{V_p}$
+
+
+## Immunisation of portfolio risk
+
+- Let’s divide the first equation from the previous slide by $V_p$
+
+$$n_2 \frac{P_2}{V_p} + n_{10} \frac{P_{10}}{V_p} = \frac{V_p}{V_p} = 1$$
+
+- This is equivalent to
+
+$$w_2 + w_{10} = 1$$
+
+- The second equation becomes
+
+$$w_2 D_2 + (1-w_2) D_{10} = 4$$
+
+- And therefore
+
+$$w_2 = \frac{D_p - D_{10}}{D_2- D_{10}} = \frac{4-7.559}{1.889-7.559} = 0.6278$$
+
+
+## Immunisation of portfolio risk
+
+- Approx 63% of our portfolio is in the 2-year bond and 37% in the 10-year bond 
+- The dollar amount invested 
+  - 2-year bond is 0.6278 $\times$ 7,594,116 = $4,767,586 
+  - 10-year bond is 0.3722 $\times$ 7,594,116 = $2,826,530
+- In terms of the number of bonds, we need to buy approx 4,682 2-year bonds and 3,043 10-year bonds
+
+$$n_2 = \frac{w_2 V_p}{P_2} = \frac{0.6278 \times 7,594,116}{1018.36} = 4681.63$$
+
+\
+
+$$n_{10} = \frac{w_{10} V_p}{P_{10}} = \frac{0.3722 \times 7,594,116}{928.93} = 3042.78$$
+
+
+## Problems with duration
+
+- But, there are limits to the use of duration
+- Changes in the yield can only be small
+
+
+```{ojs}
+//| panel: sidebar
+
+viewof Coupon_pick5 = Inputs.range(
+  [0, 10], 
+  {value: 5, step: 0.5, label: "Coupon (%)"}
+)
+
+viewof ttm_pick5 = Inputs.range(
+  [2, 30], 
+  {value: 10, step: 1, label: "Time to Maturity"}
+)
+
+```
+
+```{ojs}
+
+filtered_dur5 = transpose(bond_prices_l3a_ojs).filter(function(dur5) {
+  return Coupon_pick5 == dur5.Coupon & ttm_pick5 == dur5.Years;
+})
+
+Plot.plot({
+  x: { label: "Yield", tickFormat: ".0%", ticks: 16, line: true, grid: true, domain: [0, 0.16]},
+  y: { label: "Price", zero:true, line: true, grid: true, domain: [0, 4000]},
+  marks: [Plot.line(filtered_dur5, { x: "Yield", y: "Price", stroke: "red"})],
+    style: {
+      color: "#0b1554",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      overflow: "visible"
+    },
+    height:500, width: 900, margin: 60
+  })
+
+```
+
+
+
+## Problems with duration
+
+- Yield curve is flat at time of investment
+  - Use initial yield to compute selling price and reinvestment income
+  - Expected return is the same as initial yield
+  - Extensions have been made to allow for non-parallel shifts
+- Small parallel shifts in yield curve required
+- No further change in interest rates is allowed after the next coupon payment date
+  - Different reinvestment rates violates parallel shift
+  - Duration changes after a change in interest rates
+- Duration states price changes are symmetrical – we know this is not true
+- Rebalancing is required as duration changes in a non-linear fashion over time
+
+
+## Parallel shifts in the yield curve
+
+- How realistic is the assumption that there are parallel shifts in yield curve?
+- Consider spread between 2-year and 10-year bonds in Australia
+
+![](Term_Spread.png){fig-align="center"}
+
+## Convexity
+
+
+
+## Convexity
+
+- The duration measures are linear approximations that do not capture the convex relationship that exists between price and yield
+- All else equal $\to$ more convexity is better than less
+- Consider two bonds, B and A with B having higher convexity than A
+  - B will have higher price whether market yield increases or decreases
+  - Capital gains will be higher when yield falls and
+  - Capital losses will be lower when yield rises
+- The market will price convexity as it is valuable $\to$ bond is priced at a premium
+  - The premium will be higher when there is higher expected volatility
+  - If yields are expected to be stable then investors will not pay much for convexity
+
+
+## Conclusion
+
+- Duration measures bond price volatility 
+- We can select certain bonds that will have different price responses based on their characteristics
+  - Coupon, YTM and time to maturity
+- Duration allows us to hedge and remove interest rate risk from our portfolio
+- But, there are limitations with duration
