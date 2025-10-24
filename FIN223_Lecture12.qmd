@@ -1,0 +1,286 @@
+---
+title: "FIN 223 Subject Review"
+subtitle: "FIN 223 Lecture 12"
+author: 
+  name: "Andrew Ainsworth"
+  affiliation: "University of Wollongong"
+format: 
+  revealjs:
+    theme: FIN223_css_L2.scss
+    html-table-processing: none
+    chalkboard: 
+      buttons: false
+      theme: whiteboard
+      boardmarker-width: 2
+      transition: 1
+      #src: FIN223_chalkboard_L4.json
+execute: 
+  eval: true
+  echo: false
+---
+
+## Lecture outline
+
+- Review of weekly content
+  - Highlight key concepts
+- Final exam
+  - Structure
+  - Hints and tips
+
+## What did you think of FIN 223?
+
+:::: {.columns}
+
+::: {.column width="33%"}
+Wollongong
+
+![](FIN223_WG.png){fig-align="center" width=80%}
+
+[Link](https://go.blueja.io/Hq8c_P5Iik-l2o67PhH2Ng){target="_blank"}
+:::
+
+::: {.column width="33%"}
+Sutherland
+
+![](FIN223_SU.png){fig-align="center" width=80%}
+
+[Link](https://go.blueja.io/nXIqOl97EEGou_95lBF8hA){target="_blank"}
+:::
+
+::: {.column width="33%"}
+Liverpool
+
+![](FIN223_LP.png){fig-align="center" width=80%}
+
+[Link](https://go.blueja.io/INZzGPtcqUubV315FsElIA){target="_blank"}
+:::
+
+::::
+
+
+## Why were you here?
+
+- My goal is to try and make sure you have a sounds set of technical skills, knowledge and understanding of investments
+
+\
+
+- When it comes time to manage your own personal investments, I hope that some of the concepts I have covered will help you make successful investment decisions
+
+\
+
+- Hopefully, it will be useful for your career as well!
+
+
+## Lecture 1: The Investment Management Process
+
+- Investment philosophy
+  1. Statement of beliefs about the markets
+  2. Statement of beliefs about the opportunities to create value
+  3. Statement of beliefs about the group’s abilities
+  4. Statement of beliefs about the group’s ability to exploit the opportunities to create value
+- Investment process considerations
+  - Fund objectives
+  - Fund constraints 
+  - Portfolio construction and rebalancing methods
+
+
+## Lecture 2: Investor Decision Making
+
+- How do we model investor preferences?
+- Utility functions allow investors to rank different investments
+- Risk averse investors require a risk premium to take on risk
+- Remember to ask yourself whether you are receiving adequate return compensation for the risk you are taking
+- Investing over the lifecycle
+
+
+## Lecture 3: Portfolio Theory
+
+- What investment opportunities are available?
+- Calculating portfolio risk and expected return from individual assets
+- What is the highest expected return the investor can achieve for a given level of risk?
+- Diversification
+  - Correlation between asset returns determines the risk reduction
+- Investors select their portfolios by choosing asset weights to maximise utility subject to the available investment opportunities
+
+
+## Lecture 4: Capital Asset Pricing Model
+
+- Capital Asset Pricing Model (CAPM)
+  - Lots of assumptions…
+  - Only systematic risk (beta) is priced, in theory
+  - Each individual asset’s contribution to systematic risk is what generates returns in this model, in theory
+  - All assets lie on the Security Market Line, in theory
+- Estimating the CAPM
+ - Measure systematic and diversifiable risk
+ - We can re-think how diversification works by focusing on firm-specific (idiosyncratic) risk
+
+
+## Lecture 5: Market Efficiency
+
+- Do prices reflect all available information?
+  - Informational efficiency 
+  - Market rationality
+- Forms of market efficiency depend on type of information
+  - Weak form 
+  - Semi-strong form
+  - Strong form
+- Anomalies
+  - A number of well known trading strategies can generate positive returns
+  - Are the returns to anomaly strategies compensation for risk?
+- Event studies
+  - Use the CAPM to help identify “abnormal” returns
+  - Can help explain drivers of stock returns (i.e. information)
+
+
+## Lecture 6: Behavioural Finance
+
+- What are the behavioural biases that impact investment decision making?
+- Limits to arbitrage
+  - Why can’t arbitrageurs take advantage of mispricing?
+  - Fundamental risk, transaction costs and model risk
+
+
+## Lecture 7: Responsible Investing
+
+- What is responsible investing?
+- Why should investors should care about Environmental, Social and Governance factors?
+- What is fiduciary duty and why is it important?
+- Divestment vs engagement
+  - How should investors try to change corporate behaviour
+- Do ESG factors impact risk?
+- Is there a performance penalty for being green and responsible?
+- What is “greenwashing”?
+
+
+## Lecture 8: Performance Evaluation
+
+- There are large number of performance evaluation metrics available
+  - Sharpe ratio, Treynor ratio , Jensen’s alpha, etc
+- Measures differ in terms of the risk-adjustment
+  - The appropriate measure depends on the risk that you are concerned with (i.e. total risk or systematic risk)
+  - They link back to portfolio theory and the CAPM
+- Market timing models allows us to estimate alpha, up-market beta and down-market beta
+  - Stock selection and market timing are two sources of investment manager skill
+- Performance attribution allows us to decompose fund performance relative to its benchmark 
+  - Decompose by industry, country, asset class, etc
+  - Two sources of value-add are stock selection and asset allocation
+ 
+ 
+## Lecture 9: Bond Pricing
+
+- Pricing bonds
+  - Determine if you receive the next coupon payment
+  - The coupon accrues each day (accrued interest)
+  - Clean vs dirty prices
+- Why do bond prices change?
+  - Change in required yields in the market (i.e. shifts in the term structure)
+  - Change in credit quality of issuer
+  - Time: bond is approaching maturity
+- Calculation of holding period return
+  - Need to consider reinvestment rate and expected sale price
+- Prices and yields have an inverse convex relationship
+
+
+## Lecture 10: Term Structure of Interest Rates
+
+- It is easy to plot the yield curve
+- We need to extract the term structure of interest rates to price bonds
+  - Spot rates are the key numbers we need 
+  - These are the yield on zero coupon bonds
+- We can bootstrap the term structure from coupon paying bonds if there are no zero coupon bonds
+- Each cash flows has its own discount rate when pricing bonds
+- We can estimate forward rates implied by spot rates
+  - They can potentially tells us something about future spot rates
+- Theories of the term structure
+  - Expectations theory
+  - Liquidity premium theory
+
+
+## Lecture 11: Interest Rate Risk
+
+- Interest rate risk can be measured using duration
+  - Modified or Macaulay
+- Macaulay duration 
+  - Discounted-cash-flow-weighted time to receipt of all its promised cash flows divided by the price of the security
+- Duration is related to
+  - Maturity (+)
+  - Coupon (-)
+  - YTM (-)
+- Duration allows investors to hedge interest rate risk and/or position their portfolio to take advantage of expected changes in interest rates
+
+
+## Final exam structure 
+
+- 3 hours
+- 8 short answer questions
+- It will cover the entire course 
+- There will be calculation and discussion questions
+- Formula sheet will be provided
+  - You can view it on Moodle
+  - I cannot add any formulas
+- Calculators
+  - Please check if your calculator is on the approved [list](https://www.uow.edu.au/student/exams/calculators/){target="_blank"}
+  - If not, please complete an application form
+  - You NEED a sticker on your calculator
+
+
+## Final exam hints
+
+- Q1: Risk aversion and portfolio theory (8 marks)
+  - Calculation and discussion supporting your calculations
+- Q2: Behavioural finance (8 marks)
+  - Qualitative question on limits to arbitrage
+- Q3: Performance evaluation (10 marks)
+  - No calculation
+  - Link between performance evaluations measures, CAPM and portfolio theory
+- Q4: Bond pricing (20 marks)
+  - Calculation of settlement price (dirty price), quoted price (clean price), accrued interest and holding period return
+
+
+## Final exam hints
+
+- Q5: CAPM (10 marks)
+  - No calculation
+  - Understanding concepts and risk measures
+- Q6: Term structure (15 marks)
+  - Calculation
+  - Bootstrapping spot rates and calculating bond prices
+- Q7: Interest rate risk (20 marks)
+  - Calculating duration and hedging
+  - 3 marks on discussion
+- Q8: Socially responsible investing (9 marks)
+  - No calculation
+  - Discussion of different strategies investors can take to be socially responsible
+
+
+## Final exam hints
+
+- Focus your study in this order
+  - Tutorials
+  - Lectures
+  - Practice questions on Moodle
+  - Textbook
+  - Labs were designed to help with assignment
+- There will be interpretation and discussion questions and not just calculation questions
+- I will have consultation up until the final exam
+  - Please email me to make a booking at a mutually convenient time
+  - You can either visit me on campus (Room 40.314) or online via Zoom
+- And don’t forget to have your calculator approved!
+
+
+## Conclusion
+
+- Hopefully you know a little more about investments than you did at the start of August...
+
+::: {.fragment}
+- And if you don’t, then at least you still have a few weeks before the exam...
+  - Unless you are are watching this recording the night before the exam!
+:::
+
+::: {.fragment}
+
+- Best of luck!
+
+![](Wazza.png){fig-align="center"}
+
+:::
