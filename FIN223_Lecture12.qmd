@@ -36,7 +36,7 @@ Wollongong
 
 ![](FIN223_WG.png){fig-align="center" width=80%}
 
-[Link](https://go.blueja.io/Hq8c_P5Iik-l2o67PhH2Ng){target="_blank"}
+[Link]( https://go.blueja.io/Z-E3MKaq50CTYtQbzos6_A ){target="_blank"}
 :::
 
 ::: {.column width="33%"}
@@ -44,7 +44,7 @@ Sutherland
 
 ![](FIN223_SU.png){fig-align="center" width=80%}
 
-[Link](https://go.blueja.io/nXIqOl97EEGou_95lBF8hA){target="_blank"}
+[Link](https://go.blueja.io/406c-6DPuEaHiXNcjslkSA){target="_blank"}
 :::
 
 ::: {.column width="33%"}
@@ -52,7 +52,7 @@ Liverpool
 
 ![](FIN223_LP.png){fig-align="center" width=80%}
 
-[Link](https://go.blueja.io/INZzGPtcqUubV315FsElIA){target="_blank"}
+[Link](https://go.blueja.io/HH6Qk0IOw0OVU5ndK2LtXQ){target="_blank"}
 :::
 
 ::::
@@ -60,11 +60,11 @@ Liverpool
 
 ## Why were you here?
 
-- My goal is to try and make sure you have a sounds set of technical skills, knowledge and understanding of investments
+- My goal is to try and make sure you have a sound set of technical skills, knowledge and understanding of investments
 
 \
 
-- When it comes time to manage your own personal investments, I hope that some of the concepts I have covered will help you make successful investment decisions
+- I hope that some of the concepts I have covered will help you make successful investment decisions when you are managing your own personal investments
 
 \
 
@@ -179,6 +179,7 @@ Liverpool
 - Calculation of holding period return
   - Need to consider reinvestment rate and expected sale price
 - Prices and yields have an inverse convex relationship
+- See pricing spreadsheet from lab in week 13
 
 
 ## Lecture 10: Term Structure of Interest Rates
@@ -211,8 +212,8 @@ Liverpool
 
 ## Final exam structure 
 
-- 3 hours
-- 8 short answer questions
+- 2 hours
+- 6 short answer questions
 - It will cover the entire course 
 - There will be calculation and discussion questions
 - Formula sheet will be provided
@@ -226,31 +227,27 @@ Liverpool
 
 ## Final exam hints
 
-- Q1: Risk aversion and portfolio theory (8 marks)
+- Q1: Risk aversion and portfolio theory (10 marks)
   - Calculation and discussion supporting your calculations
-- Q2: Behavioural finance (8 marks)
+- Q2: Behavioural finance (10 marks)
   - Qualitative question on limits to arbitrage
-- Q3: Performance evaluation (10 marks)
-  - No calculation
-  - Link between performance evaluations measures, CAPM and portfolio theory
-- Q4: Bond pricing (20 marks)
-  - Calculation of settlement price (dirty price), quoted price (clean price), accrued interest and holding period return
+- Q3: Performance evaluation (15 marks)
+  - Calculation and discussion
+- Q4: Bond pricing (25 marks)
+  - Calculation of settlement price (dirty price), quoted price (clean price), accrued interest
+  - Calculation of holding period return (sell price, coupons, reinvestment returns)
 
 
 ## Final exam hints
 
-- Q5: CAPM (10 marks)
-  - No calculation
-  - Understanding concepts and risk measures
-- Q6: Term structure (15 marks)
-  - Calculation
-  - Bootstrapping spot rates and calculating bond prices
-- Q7: Interest rate risk (20 marks)
-  - Calculating duration and hedging
-  - 3 marks on discussion
-- Q8: Socially responsible investing (9 marks)
-  - No calculation
-  - Discussion of different strategies investors can take to be socially responsible
+- Q5: Term structure (20 marks)
+  - Calculation of bond prices using term structure
+  - Calculation of future spot rates under expectations theory
+  - Discussion of liquidity premium theory
+- Q6: Interest rate risk (20 marks)
+  - Calculating duration 
+  - Calculating how to hedge cash flows using duration
+  - Discussion on theoretical duration concepts
 
 
 ## Final exam hints
@@ -262,10 +259,12 @@ Liverpool
   - Textbook
   - Labs were designed to help with assignment
 - There will be interpretation and discussion questions and not just calculation questions
-- I will have consultation up until the final exam
+- Group consultation session on campus
+  - Wed 4th Nov in 19-1064 from 14:30-15:30
+  - Please post topics/questions to the padlet on Moodle
+- Individual consultation
   - Please email me to make a booking at a mutually convenient time
-  - You can either visit me on campus (Room 40.314) or online via Zoom
-- And don’t forget to have your calculator approved!
+- And don’t forget to have your calculator approved
 
 
 ## Conclusion
